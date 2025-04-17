@@ -3,229 +3,531 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Portfolio - Yash M</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Yash M | Creative Developer Portfolio</title>
+    <meta name="description" content="Portfolio of creative technology projects exploring the intersection of code, art, and interaction design">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&display=swap" rel="stylesheet">
-    <style type="text/tailwindcss">
-        @theme {
-            --color-primary: #0ea5e9; /* sky-500 */
-            --color-secondary: #64748b; /* slate-500 */
-            --color-background: #f8fafc; /* slate-50 */
-            --color-text: #0f172a; /* slate-900 */
-            --color-card-bg: #ffffff; /* white */
-            --color-border: #e2e8f0; /* slate-200 */
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300..800&family=DM+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6', /* blue-500 - softer blue */
+                        'primary-light': '#93c5fd', /* blue-300 */
+                        secondary: '#6b7280', /* gray-500 */
+                        accent: '#8b5cf6', /* violet-500 */
+                        background: '#f8fafc', /* slate-50 */
+                        surface: '#ffffff', /* white */
+                        text: '#1e293b', /* slate-800 */
+                        'text-light': '#64748b', /* slate-500 */
+                        border: '#e2e8f0', /* slate-200 */
+                        success: '#10b981', /* emerald-500 */
+                    },
+                    fontFamily: {
+                        sans: ['DM Sans', 'sans-serif'],
+                        display: ['Sora', 'sans-serif'],
+                    },
+                },
+            },
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: theme('colors.background');
+            color: theme('colors.text');
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-            /* Dark Mode Colors (Optional - can be activated via JS later) */
-            :dark {
-                --color-primary: #38bdf8; /* sky-400 */
-                --color-secondary: #94a3b8; /* slate-400 */
-                --color-background: #0f172a; /* slate-900 */
-                --color-text: #f8fafc; /* slate-50 */
-                --color-card-bg: #1e293b; /* slate-800 */
-                --color-border: #334155; /* slate-700 */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Sora', sans-serif;
+        }
+
+        .section {
+            padding-top: 4rem;
+            padding-bottom: 4rem;
+        }
+        @media (min-width: 768px) {
+            .section {
+                padding-top: 6rem;
+                padding-bottom: 6rem;
             }
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--color-background);
-            color: var(--color-text);
-            transition: background-color 0.3s, color 0.3s;
-            @apply antialiased;
-        }
-
+        /* Project card styles */
         .project-card {
-            background-color: var(--color-card-bg);
-            border: 1px solid var(--color-border);
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.3s, border-color 0.3s;
-            @apply rounded-lg shadow-sm overflow-hidden hover:shadow-lg hover:-translate-y-1;
+            background-color: theme('colors.surface');
+            border: 1px solid theme('colors.border');
+            transition: all 0.3s ease;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        .project-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-0.25rem);
         }
 
-        .project-card h3 {
-             color: var(--color-text);
-             transition: color 0.3s;
+        .project-card:hover .project-image {
+            transform: scale(1.05);
         }
-         .project-card p {
-             color: var(--color-secondary);
-             transition: color 0.3s;
-         }
+
+        .project-image {
+            transition: transform 0.5s ease;
+            width: 100%;
+            height: 14rem;
+            object-fit: cover;
+        }
+
+        .project-category {
+            background-color: theme('colors.primary');
+            color: theme('colors.surface');
+            font-size: 0.75rem;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+            border-radius: 9999px;
+            display: inline-block;
+        }
 
         .project-link {
-            background-color: var(--color-primary);
+            background-color: theme('colors.primary');
             color: white;
-            transition: background-color 0.2s ease-in-out;
-            @apply inline-block px-4 py-2 rounded text-sm font-medium hover:opacity-90;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .project-link:hover {
+            background-color: theme('colors.primary-light');
+            opacity: 1;
+        }
+        .project-link:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
-        /* Simple loading fade-in */
+        /* Button styles */
+        .btn {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: theme('colors.primary');
+            color: white;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-outline {
+            border: 1px solid theme('colors.border');
+        }
+        .btn-outline:hover {
+            background-color: #f9fafb;
+        }
+        .dark .btn-outline:hover {
+            background-color: #1f2937;
+        }
+
+        /* Animation classes */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        body {
-            animation: fadeIn 0.5s ease-in-out;
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-         /* Header styles */
+        /* Staggered animations for cards */
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+        .stagger-6 { animation-delay: 0.6s; }
+        .stagger-7 { animation-delay: 0.7s; }
+        .stagger-8 { animation-delay: 0.8s; }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: theme('colors.background');
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.secondary');
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.primary');
+        }
+
+        /* Header and navbar styles */
         header {
-             background-color: var(--color-card-bg);
-             border-bottom: 1px solid var(--color-border);
-             transition: background-color 0.3s, border-color 0.3s;
-             @apply sticky top-0 z-50 shadow-sm;
+            background-color: theme('colors.surface');
+            border-bottom: 1px solid theme('colors.border');
+            transition: all 0.3s;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(4px);
+            background-opacity: 0.9;
+        }
+
+        .header-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
         /* Footer styles */
         footer {
-             background-color: var(--color-card-bg);
-             border-top: 1px solid var(--color-border);
-             transition: background-color 0.3s, border-color 0.3s;
-             @apply mt-16;
+            background-color: theme('colors.surface');
+            border-top: 1px solid theme('colors.border');
+        }
+
+        /* Dark mode overrides */
+        .dark body {
+            background-color: #0f172a; /* slate-900 */
+            color: #f1f5f9; /* slate-100 */
+        }
+        
+        .dark .project-card {
+            background-color: #1e293b; /* slate-800 */
+            border-color: #334155; /* slate-700 */
+        }
+        
+        .dark .project-category {
+            background-color: #60a5fa; /* blue-400 */
+            color: #0f172a; /* slate-900 - ensuring dark text on light background */
+        }
+        
+        .dark .project-link {
+            background-color: #3b82f6; /* blue-500 - darker blue for better contrast */
+            color: white;
+        }
+        
+        .dark .project-link:hover {
+            background-color: #2563eb; /* blue-600 - even darker on hover */
+            opacity: 1;
+        }
+        
+        .dark header, .dark footer {
+            background-color: #1e293b; /* slate-800 */
+            border-color: #334155; /* slate-700 */
+        }
+        
+        .dark .text-secondary {
+            color: #cbd5e1; /* slate-300 - lighter text for better contrast */
+        }
+        
+        .dark .bg-surface {
+            background-color: #1e293b; /* slate-800 */
+        }
+        
+        .dark .text-primary {
+            color: #60a5fa; /* blue-400 */
+        }
+        
+        .dark .border-border {
+            border-color: #334155; /* slate-700 */
+        }
+        
+        .dark .bg-primary {
+            background-color: #60a5fa; /* blue-400 */
+        }
+        
+        .dark .bg-background {
+            background-color: #0f172a; /* slate-900 */
+        }
+        
+        .dark .bg-primary-light, .dark .bg-primary-opacity-10 {
+            background-color: rgba(96, 165, 250, 0.1); /* blue-400 with opacity */
+        }
+
+        /* Hero section gradient backgrounds */
+        .bg-gradient-hero-light {
+            background: linear-gradient(to bottom right, #eff6ff, #eef2ff); /* blue-50 to indigo-50 */
+        }
+        
+        .dark .bg-gradient-hero-light {
+            background: linear-gradient(to bottom right, #0f172a, #1e1b4b); /* slate-900 to indigo-950 */
+        }
+        
+        .bg-gradient-about-light {
+            background: linear-gradient(to bottom right, #f8fafc, #eff6ff); /* slate-50 to blue-50 */
+        }
+        
+        .dark .bg-gradient-about-light {
+            background: linear-gradient(to bottom right, #0f172a, #172554); /* slate-900 to blue-950 */
+        }
+
+        .dark #scrollToTop {
+            background-color: #3b82f6; /* blue-500 */
+        }
+
+        .dark #scrollToTop:hover {
+            background-color: #2563eb; /* blue-600 */
+        }
+
+        .dark .text-gray-600 {
+            color: #cbd5e1; /* slate-300 - lighter text for better contrast */
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
-
-    <!-- Header -->
-    <header>
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-2xl font-bold text-primary">Yash M's Portfolio</div>
-            <!-- Add nav links here if needed -->
-            <div>
-                 <!-- Placeholder for Dark Mode Toggle -->
-                 <!-- <button id="darkModeToggle" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-slate-700">
-                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                 </button> -->
-            </div>
-        </nav>
-    </header>
-
     <!-- Main Content -->
-    <main class="flex-grow container mx-auto px-6 py-12">
-        <section id="about" class="mb-16 text-center">
-            <h1 class="text-4xl font-bold mb-4 text-text">Creative Technologist & Developer</h1>
-            <p class="text-lg text-secondary max-w-3xl mx-auto">
-                Exploring the intersection of art, code, and interaction. Welcome to my collection of projects.
-            </p>
-        </section>
-
-        <section id="projects">
-            <h2 class="text-3xl font-semibold mb-8 text-center text-text">Projects</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-                <!-- Project Cards - Generated from list -->
-                <div class="project-card">
-                    <img src="https://via.placeholder.com/400x200/0ea5e9/ffffff?text=PixelArt" alt="PixelArt Project" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">PixelArt</h3>
-                        <p class="text-secondary mb-4 text-sm">Description: pixelart</p>
-                        <a href="https://yashm20.github.io/projects/pixelart/index.html" target="_blank" rel="noopener noreferrer" class="project-link">
-                            View Project
-                        </a>
-                        <!-- <a href="#" class="text-sm text-secondary hover:text-primary ml-4">View Code</a> -->
-                    </div>
+    <main class="flex-grow">
+        <!-- Projects Section -->
+        <section id="projects" class="section">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <span class="inline-block bg-blue-500 bg-opacity-10 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-full text-sm font-medium mb-4">Featured Work</span>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Creative Projects</h2>
+                    <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                        A collection of interactive experiences, visual experiments, and some projects
+                    </p>
                 </div>
-
-                <div class="project-card">
-                    <img src="https://via.placeholder.com/400x200/0ea5e9/ffffff?text=AudioParticles" alt="Audio-Driven-Particles Project" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Audio-Driven Particles</h3>
-                        <p class="text-secondary mb-4 text-sm">Description: Audio-Driven-Particles</p>
-                        <a href="https://yashm20.github.io/projects/Audio-Driven-Particles/index.html" target="_blank" rel="noopener noreferrer" class="project-link">
-                            View Project
-                        </a>
-                        <!-- <a href="#" class="text-sm text-secondary hover:text-primary ml-4">View Code</a> -->
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- PixelArt Project -->
+                    <div class="project-card fade-in stagger-1">
+                        <div class="overflow-hidden">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSd2qwzv2QWouzJKCg13mQI0l0gOUdZuppGzg&s" 
+                                alt="PixelArt Project" class="project-image">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="project-category">Digital Art</span>
+                                <span class="text-xs text-secondary">2024</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">PixelArt</h3>
+                            <p class="text-secondary mb-4 text-sm">An interactive pixel art creation tool that allows users to design and export retro-style digital art.</p>
+                            <div class="flex items-center justify-between">
+                                <a href="https://yashm20.github.io/projects/pixelart/index.html" target="_blank" rel="noopener noreferrer" class="project-link">
+                                    View Project
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="project-card">
-                     <img src="https://via.placeholder.com/400x200/0ea5e9/ffffff?text=3DEcosystem" alt="3D Ecosystem Simulation Project" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">3D Ecosystem Simulation</h3>
-                        <p class="text-secondary mb-4 text-sm">Description: 3D_Ecosystem_Simulation</p>
-                        <a href="https://yashm20.github.io/projects/3D_Ecosystem_Simulation/index.html" target="_blank" rel="noopener noreferrer" class="project-link">
-                            View Project
-                        </a>
-                        <!-- <a href="#" class="text-sm text-secondary hover:text-primary ml-4">View Code</a> -->
+                    <!-- Dynamic Data Sculpture -->
+                    <div class="project-card fade-in stagger-4">
+                        <div class="overflow-hidden">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7ewQT8q3tOl7LMGMqWsRAzS9kj-R7OtOKVQ&s"
+                                alt="Dynamic Data Sculpture Project" class="project-image">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="project-category">Data Art</span>
+                                <span class="text-xs text-secondary">2024</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Dynamic Data Sculpture</h3>
+                            <p class="text-secondary mb-4 text-sm">A visual representation of complex datasets transformed into responsive,
+                                sculptural forms that users can explore and manipulate.</p>
+                            <div class="flex items-center justify-between">
+                                <a href="https://yashm20.github.io/projects/dynamic-data-sculpture/index.html" target="_blank"
+                                    rel="noopener noreferrer" class="project-link">
+                                    View Project
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                                        <polyline points="7 7 17 7 17 17"></polyline>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-                <div class="project-card">
-                     <img src="https://via.placeholder.com/400x200/0ea5e9/ffffff?text=DataSculpture" alt="Dynamic Data Sculpture Project" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Dynamic Data Sculpture</h3>
-                        <p class="text-secondary mb-4 text-sm">Description: dynamic-data-sculpture</p>
-                        <a href="https://yashm20.github.io/projects/dynamic-data-sculpture/index.html" target="_blank" rel="noopener noreferrer" class="project-link">
-                            View Project
-                        </a>
-                        <!-- <a href="#" class="text-sm text-secondary hover:text-primary ml-4">View Code</a> -->
+                    
+                    <!-- NeuralNet Symphony -->
+                    <div class="project-card fade-in stagger-8">
+                        <div class="overflow-hidden">
+                            <img src="https://emeritus.org/in/wp-content/uploads/sites/3/2024/04/convolutional-neural-network-1024x580.png"
+                                alt="NeuralNet Symphony Project" class="project-image">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="project-category">AI & Audio</span>
+                                <span class="text-xs text-secondary">2024</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">NeuralNet Symphony</h3>
+                            <p class="text-secondary mb-4 text-sm">An experimental project using neural networks to generate and visualize
+                                musical compositions with evolving patterns.</p>
+                            <div class="flex items-center justify-between">
+                                <a href="https://yashm20.github.io/projects/NeuralNet_Symphony/index.html" target="_blank"
+                                    rel="noopener noreferrer" class="project-link">
+                                    View Project
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                                        <polyline points="7 7 17 7 17 17"></polyline>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="project-card">
-                     <img src="https://via.placeholder.com/400x200/0ea5e9/ffffff?text=FractalExplorer" alt="Fractal Explorer Project" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Fractal Explorer</h3>
-                        <p class="text-secondary mb-4 text-sm">Description: Fractal_Explorer</p>
-                        <a href="https://yashm20.github.io/projects/Fractal_Explorer/index.html" target="_blank" rel="noopener noreferrer" class="project-link">
-                            View Project
-                        </a>
-                        <!-- <a href="#" class="text-sm text-secondary hover:text-primary ml-4">View Code</a> -->
+                    <!-- 3D Ecosystem Simulation -->
+                    <div class="project-card fade-in stagger-3">
+                        <div class="overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1617791160536-598cf32026fb?auto=format&fit=crop&w=800&q=80"
+                                alt="3D Ecosystem Simulation Project" class="project-image">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="project-category">3D Simulation</span>
+                                <span class="text-xs text-secondary">2024</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">3D Ecosystem Simulation</h3>
+                            <p class="text-secondary mb-4 text-sm">An immersive 3D environment that simulates ecological systems with
+                                interactive elements and emergent behaviors.</p>
+                            <div class="flex items-center justify-between">
+                                <a href="https://yashm20.github.io/projects/3D_Ecosystem_Simulation/index.html" target="_blank"
+                                    rel="noopener noreferrer" class="project-link">
+                                    View Project
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                                        <polyline points="7 7 17 7 17 17"></polyline>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="project-card">
-                     <img src="https://via.placeholder.com/400x200/0ea5e9/ffffff?text=Symphony3D" alt="Symphony 3D Project" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Symphony 3D</h3>
-                        <p class="text-secondary mb-4 text-sm">Description: Symphony_3D</p>
-                        <a href="https://yashm20.github.io/projects/Symphony_3D/index.html" target="_blank" rel="noopener noreferrer" class="project-link">
-                            View Project
-                        </a>
-                        <!-- <a href="#" class="text-sm text-secondary hover:text-primary ml-4">View Code</a> -->
+                    <!-- Fractal Explorer -->
+                    <div class="project-card fade-in stagger-5">
+                        <div class="overflow-hidden">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtxUQpHoRH7zswMrNMvMflSGBjXzXAQFYdQj93juyZAuWlj1STYTqwHqO9LE5NKi0wsbw&usqp=CAU"
+                                alt="Fractal Explorer Project" class="project-image">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="project-category">Fractals</span>
+                                <span class="text-xs text-secondary">2024</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Fractal Explorer</h3>
+                            <p class="text-secondary mb-4 text-sm">An interactive tool for exploring the beautiful world of fractals with
+                                real-time rendering and deep zoom capabilities.</p>
+                            <div class="flex items-center justify-between">
+                                <a href="https://yashm20.github.io/projects/Fractal_Explorer/index.html" target="_blank"
+                                    rel="noopener noreferrer" class="project-link">
+                                    View Project
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                                        <polyline points="7 7 17 7 17 17"></polyline>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="project-card">
-                    <img src="https://via.placeholder.com/400x200/0ea5e9/ffffff?text=AtherWeavers" alt="Ather Weavers Project" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">Ather Weavers</h3>
-                        <p class="text-secondary mb-4 text-sm">Description: Ather_Weavers</p>
-                        <a href="https://yashm20.github.io/projects/Ather_Weavers/index.html" target="_blank" rel="noopener noreferrer" class="project-link">
-                           View Project
-                        </a>
-                       <!-- <a href="#" class="text-sm text-secondary hover:text-primary ml-4">View Code</a> -->
+                    <!-- Audio-Driven Particles -->
+                    <div class="project-card fade-in stagger-2">
+                        <div class="overflow-hidden">
+                            <img src="https://i.ytimg.com/vi/2KNO_laPA9s/maxresdefault.jpg" 
+                                alt="Audio-Driven-Particles Project" class="project-image">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="project-category">Audio Visualization</span>
+                                <span class="text-xs text-secondary">2024</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Audio-Driven Particles</h3>
+                            <p class="text-secondary mb-4 text-sm">A real-time particle system that responds dynamically to audio input, creating mesmerizing visual patterns.</p>
+                            <div class="flex items-center justify-between">
+                                <a href="https://yashm20.github.io/projects/Audio-Driven-Particles/index.html" target="_blank" rel="noopener noreferrer" class="project-link">
+                                    View Project
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="project-card">
-                     <img src="https://via.placeholder.com/400x200/0ea5e9/ffffff?text=NeuralNetSymphony" alt="NeuralNet Symphony Project" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2">NeuralNet Symphony</h3>
-                        <p class="text-secondary mb-4 text-sm">Description: NeuralNet_Symphony</p>
-                        <a href="https://yashm20.github.io/projects/NeuralNet_Symphony/index.html" target="_blank" rel="noopener noreferrer" class="project-link">
-                            View Project
-                        </a>
-                        <!-- <a href="#" class="text-sm text-secondary hover:text-primary ml-4">View Code</a> -->
+                    <!-- Symphony 3D -->
+                    <div class="project-card fade-in stagger-6">
+                        <div class="overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=800&q=80" 
+                                alt="Symphony 3D Project" class="project-image">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="project-category">Audio Visualization</span>
+                                <span class="text-xs text-secondary">2024</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Symphony 3D</h3>
+                            <p class="text-secondary mb-4 text-sm">A three-dimensional audio visualization experience that translates music into immersive sculptural forms and environments.</p>
+                            <div class="flex items-center justify-between">
+                                <a href="https://yashm20.github.io/projects/Symphony_3D/index.html" target="_blank" rel="noopener noreferrer" class="project-link">
+                                    View Project
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
+                    <!-- Ather Weavers -->
+                    <div class="project-card fade-in stagger-7">
+                        <div class="overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1574169207511-e21a21c8075a?auto=format&fit=crop&w=800&q=80" 
+                                alt="Ather Weavers Project" class="project-image">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="project-category">Digital Art</span>
+                                <span class="text-xs text-secondary">2024</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Ather Weavers</h3>
+                            <p class="text-secondary mb-4 text-sm">A procedurally generated digital art project that creates intricate woven patterns inspired by traditional textile arts.</p>
+                            <div class="flex items-center justify-between">
+                                <a href="https://yashm20.github.io/projects/Ather_Weavers/index.html" target="_blank" rel="noopener noreferrer" class="project-link">
+                                    View Project
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                  
+                </div>
             </div>
         </section>
-
     </main>
 
+    <!-- Scroll to top button -->
+    <button id="scrollToTop" class="fixed bottom-6 right-6 p-3 rounded-full bg-blue-500 text-white shadow-lg opacity-0 transition-opacity duration-300 hover:bg-blue-600">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    </button>
+
     <!-- Footer -->
-    <footer>
-        <div class="container mx-auto px-6 py-6 text-center text-secondary text-sm">
-            <p>&copy; <span id="currentYear"></span> Yash M. All Rights Reserved.</p>
-            <!-- Add social links here if desired -->
-            <!-- <div class="mt-2">
-                <a href="#" class="text-secondary hover:text-primary mx-2">GitHub</a>
-                <a href="#" class="text-secondary hover:text-primary mx-2">LinkedIn</a>
-                <a href="#" class="text-secondary hover:text-primary mx-2">Twitter</a>
-            </div> -->
+    <footer class="bg-white dark:bg-gray-800 py-12 mt-12">
+        <div class="container mx-auto px-6">
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-600 dark:text-gray-400 text-sm">&copy; <span id="currentYear"></span> Yash M. All Rights Reserved.</p>
+                <p class="text-gray-600 dark:text-gray-400 text-sm mt-4 md:mt-0">Designed and developed with ❤️</p>
+            </div>
         </div>
     </footer>
 
@@ -233,20 +535,78 @@
         // Set current year in footer
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-        // Basic Dark Mode Toggle Placeholder Logic (requires more setup for persistence)
-        // const darkModeToggle = document.getElementById('darkModeToggle');
-        // if (darkModeToggle) {
-        //     darkModeToggle.addEventListener('click', () => {
-        //         document.documentElement.classList.toggle('dark');
-        //         // You would typically save the preference in localStorage here
-        //     });
-        // }
-        // // Check initial preference (e.g., from localStorage or system preference)
-        // if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        //   document.documentElement.classList.add('dark')
-        // } else {
-        //   document.documentElement.classList.remove('dark')
-        // }
+        // Dark Mode Toggle Logic
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+                // Save preference to localStorage
+                if (document.documentElement.classList.contains('dark')) {
+                    localStorage.theme = 'dark';
+                } else {
+                    localStorage.theme = 'light';
+                }
+            });
+        }
+        
+        // Check initial dark mode preference
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+        
+        // Scroll to top logic
+        const scrollToTopButton = document.getElementById('scrollToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                scrollToTopButton.classList.replace('opacity-0', 'opacity-100');
+            } else {
+                scrollToTopButton.classList.replace('opacity-100', 'opacity-0');
+            }
+        });
+        
+        if (scrollToTopButton) {
+            scrollToTopButton.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+        
+        // Add header shadow on scroll
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('header-shadow');
+            } else {
+                header.classList.remove('header-shadow');
+            }
+        });
+        
+        // Close mobile menu when clicking on a link
+        const mobileMenuLinks = document.querySelectorAll('#mobileMenu a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Add background grid pattern
+        const bgGridElements = document.querySelectorAll('.bg-grid-pattern');
+        bgGridElements.forEach(el => {
+            el.style.backgroundImage = "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")";
+        });
     </script>
 
 </body>
