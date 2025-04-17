@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Ecosystem Simulation</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #222;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            font-family: sans-serif;
+        }
+
+        button {
+            transition: background-color 0.2s ease;
+        }
+
+        #stats {
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- UI Controls -->
+    <div id="ui">
+        <h2 class="text-lg font-bold mb-2">Controls</h2>
+        <button id="addHerbivore"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm mr-2 mb-2">
+            Add Herbivore
+        </button>
+        <button id="addFood"
+            class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-sm mb-2">
+            Add Food (x10)
+        </button>
+        <div id="stats">
+            <div>Herbivores: <span id="herbivoreCount">0</span></div>
+            <div>Food: <span id="foodCount">0</span></div>
+        </div>
+    </div>
+
+    <!-- Canvas Container -->
+    <div id="simulationCanvas"></div>
+
+    <!-- Three.js CDN (using ES module) -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <!-- Main Simulation Script -->
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>

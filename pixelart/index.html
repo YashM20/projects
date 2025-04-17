@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel Art Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-gray-100 flex flex-col md:flex-row h-screen overflow-hidden font-sans">
+
+  <div class="w-full md:w-64 bg-white p-4 shadow-lg flex flex-col space-y-4 overflow-y-auto shrink-0 border-r border-gray-200">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Tools</h2>
+
+    <div class="space-y-2">
+      <button id="pencilTool" class="tool-button w-full text-left p-2 rounded hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300 flex items-center text-gray-700">
+        <i class="fas fa-pencil-alt mr-3 w-4 text-center"></i>Pencil
+      </button>
+      <button id="eraserTool" class="tool-button w-full text-left p-2 rounded hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300 flex items-center text-gray-700">
+        <i class="fas fa-eraser mr-3 w-4 text-center"></i>Eraser
+      </button>
+      <button id="fillTool" class="tool-button w-full text-left p-2 rounded hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300 flex items-center text-gray-700">
+        <i class="fas fa-fill-drip mr-3 w-4 text-center"></i>Fill
+      </button>
+      <button id="pickerTool" class="tool-button w-full text-left p-2 rounded hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300 flex items-center text-gray-700">
+        <i class="fas fa-eye-dropper mr-3 w-4 text-center"></i>Color Picker
+      </button>
+    </div>
+    <hr class="border-gray-200">
+
+    <div>
+      <label for="colorPicker" class="block text-sm font-medium text-gray-600 mb-1">Color</label>
+      <input type="color" id="colorPicker" value="#000000"
+        class="w-full h-10 p-1 border border-gray-300 rounded cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-300">
+      <label class="block text-sm font-medium text-gray-600 mt-3 mb-1">Palette</label>
+      <div id="palette" class="grid grid-cols-8 gap-1 mt-1">
+      </div>
+    </div>
+    <hr class="border-gray-200">
+
+    <div>
+      <label for="pixelSizeSlider" class="block text-sm font-medium text-gray-600 mb-1">Brush Size: <span
+          id="pixelSizeLabel">1</span>px</label>
+      <input type="range" id="pixelSizeSlider" min="1" max="10" value="1"
+        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-300 range-thumb:bg-blue-500">
+    </div>
+    <hr class="border-gray-200">
+
+    <div>
+      <label class="flex items-center space-x-2 cursor-pointer">
+        <input type="checkbox" id="gridToggle" class="rounded text-blue-500 focus:ring-blue-300">
+        <span class="text-sm font-medium text-gray-600">Show Grid</span>
+      </label>
+    </div>
+    <hr class="border-gray-200">
+
+    <div class="space-y-3">
+      <h3 class="text-lg font-semibold text-gray-800">Image Conversion</h3>
+      <label for="imageUpload"
+        class="cursor-pointer inline-block w-full text-center p-2 rounded bg-blue-500 text-white hover:bg-blue-600 transition duration-150 ease-in-out text-sm font-medium">
+        <i class="fas fa-upload mr-2"></i>Upload Image
+      </label>
+      <input type="file" id="imageUpload" accept="image/*" class="hidden">
+      <div>
+        <label for="imagePixelSizeSlider" class="block text-sm font-medium text-gray-600 mb-1">Pixelation Level: <span
+            id="imagePixelSizeLabel">8</span></label>
+        <input type="range" id="imagePixelSizeSlider" min="2" max="64" value="8" step="1"
+          class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-300 range-thumb:bg-green-500">
+      </div>
+      <button id="convertImageBtn"
+        class="w-full p-2 rounded bg-green-500 text-white hover:bg-green-600 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+        disabled>
+        Convert to Pixel Art
+      </button>
+    </div>
+    <hr class="border-gray-200">
+
+    <div class="space-y-3">
+      <h3 class="text-lg font-semibold text-gray-800">Canvas</h3>
+      <div>
+        <label for="canvasSizeSelect" class="block text-sm font-medium text-gray-600 mb-1">Size</label>
+        <select id="canvasSizeSelect" class="w-full p-2 border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm">
+          <option value="32">32x32</option>
+          <option value="64" selected>64x64</option>
+          <option value="128">128x128</option>
+          <option value="256">256x256</option>
+        </select>
+      </div>
+      <button id="clearCanvasBtn" class="w-full p-2 rounded bg-red-500 text-white hover:bg-red-600 transition duration-150 ease-in-out text-sm font-medium flex items-center justify-center">
+        <i class="fas fa-trash-alt mr-2"></i>Clear Canvas
+      </button>
+      <button id="exportBtn" class="w-full p-2 rounded bg-purple-500 text-white hover:bg-purple-600 transition duration-150 ease-in-out text-sm font-medium flex items-center justify-center">
+        <i class="fas fa-download mr-2"></i>Export PNG
+      </button>
+      <div class="flex space-x-2 mt-2">
+        <button id="undoBtn" class="w-1/2 p-2 rounded bg-gray-500 text-white hover:bg-gray-600 transition duration-150 ease-in-out text-sm font-medium flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            <i class="fas fa-undo mr-2"></i>Undo
+        </button>
+        <button id="redoBtn" class="w-1/2 p-2 rounded bg-gray-500 text-white hover:bg-gray-600 transition duration-150 ease-in-out text-sm font-medium flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            <i class="fas fa-redo mr-2"></i>Redo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-1 flex items-center justify-center p-4 sm:p-6 md:p-8 bg-gray-200 overflow-auto">
+    <div id="canvasContainer" class="relative shadow-lg bg-white">
+      <canvas id="pixelCanvas" width="512" height="512" class="block border border-gray-300 relative z-0"></canvas>
+      <div id="gridOverlay" class="absolute inset-0 w-full h-full pointer-events-none z-10" style="display: none;">
+      </div>
+    </div>
+  </div>
+
+  <div id="messageModal" class="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4" style="display: none;">
+    <div class="bg-white rounded-lg shadow-xl p-6 m-4 max-w-sm w-full text-center">
+      <span onclick="closeModal()" class="float-right -mt-4 -mr-2 text-3xl font-bold text-gray-400 hover:text-gray-600 cursor-pointer leading-none">&times;</span>
+      <p id="modalMessageText" class="mt-2 text-gray-700 text-base">Message goes here.</p>
+      <button onclick="closeModal()" class="mt-6 px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 text-sm font-medium">OK</button>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+
+</html>

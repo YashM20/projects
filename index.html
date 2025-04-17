@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Gesture Car Game</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.19.0/dist/tf-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter@4.19.0/dist/tf-converter.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.19.0/dist/tf-backend-webgl.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.min.js"></script>
+    <script src="https://cdn.tailwindcss.com/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Align items to the top */
+            min-height: 100vh;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            margin: 0;
+            padding-top: 20px; /* Add padding at the top */
+            overflow: hidden; /* Prevent body scrollbars */
+        }
+        #game-container {
+            position: relative;
+            width: 90%; /* Responsive width */
+            max-width: 800px; /* Max width */
+            aspect-ratio: 16 / 9; /* Maintain aspect ratio */
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden; /* Clip contents */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        #gameCanvas {
+            display: block; /* Remove extra space below canvas */
+            width: 100%;
+            height: 100%;
+            background-color: #555; /* Darker background for track */
+            border-radius: 8px; /* Match container */
+        }
+        #loading, #info {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            text-align: center;
+            z-index: 10;
+        }
+         #info {
+             top: 10px; /* Position info at the top */
+             left: 10px;
+             transform: none; /* Reset transform */
+             background-color: rgba(0, 0, 0, 0.6);
+             padding: 8px 12px;
+             font-size: 0.9em;
+             max-width: 90%; /* Prevent overflow */
+         }
+        #controls-info {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        /* Hide the video element visually but keep it accessible */
+        #videoInput {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            opacity: 0;
+        }
+         /* Simple track styling */
+        .track-line {
+            stroke: white;
+            stroke-width: 5;
+            stroke-dasharray: 15 10; /* Dashed lines */
+        }
+        .track-edge {
+            stroke: #ccc; /* Lighter gray for edges */
+            stroke-width: 10;
+        }
+        /* Toggle switch for debug mode */
+        .switch {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            z-index: 20;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+            background-color: #ccc;
+            border-radius: 20px;
+            margin-left: 8px;
+            transition: .4s;
+            cursor: pointer;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            border-radius: 50%;
+            transition: .4s;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <h1 class="text-2xl font-bold mb-4 text-gray-800">Hand Gesture Car Game</h1>
+
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <video id="videoInput" autoplay playsinline muted></video>
+        <div id="loading">Loading Model & Camera...</div>
+        <div id="info" style="display: none;">Status: Initializing...</div>
+        <label class="switch">
+            <span style="color: white; font-size: 12px;">Debug</span>
+            <input type="checkbox" id="debugToggle">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div id="controls-info" class="text-gray-700">
+        <p><b>Controls:</b></p>
+        <p>🖐️ Open Hand: Accelerate</p>
+        <p>✊ Closed Hand: Brake/Stop</p>
+        <p>↔️ Move Hand Left/Right: Steer</p>
+        <p><i>Keep your hand visible in the center.</i></p>
+    </div>
+
+    <script>
+        const videoElement = document.getElementById('videoInput');
+        const canvasElement = document.getElementById('gameCanvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        const loadingElement = document.getElementById('loading');
+        const infoElement = document.getElementById('info');
+        const debugToggle = document.getElementById('debugToggle');
+
+        let hands;
+        let gameRunning = false;
+        let lastGestureTime = 0;
+        let isDebugMode = false;
+        let lastFrameTime = 0;
+        let fps = 0;
+        const gestureCooldown = 100; // milliseconds
+
+        // --- Game State ---
+        const car = {
+            x: 0, // Will be set relative to canvas width
+            y: 0, // Will be set relative to canvas height
+            width: 30,
+            height: 50,
+            speed: 0,
+            maxSpeed: 5,
+            acceleration: 0.1,
+            braking: 0.3,
+            friction: 0.03,
+            angle: 0, // degrees (0 is up)
+            steeringAngle: 0, // How much the car is turning
+            maxSteering: 3, // Max turn degrees per frame
+            color: '#ff5733' // Orange-red color
+        };
+
+        const track = {
+            width: 0, // Will be set relative to canvas width
+            roadColor: '#555',
+            edgeColor: '#ccc',
+            lineColor: 'white',
+            edgeWidth: 20,
+            lineWidth: 10,
+            dashLength: 30,
+            gapLength: 20
+        };
+
+        // --- Hand Tracking Setup ---
+        async function setupHandTracking() {
+            infoElement.textContent = 'Status: Setting up TF.js backend...';
+            await tf.setBackend('webgl');
+            infoElement.textContent = 'Status: Loading Hand model...';
+            console.log("Loading Hands model...");
+
+            hands = new Hands({
+                locateFile: (file) => {
+                    // Make sure the path is correct relative to where hands.min.js is served
+                    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`;
+                }
+            });
+
+            hands.setOptions({
+                maxNumHands: 1, // Track only one hand
+                modelComplexity: 0, // Use the fastest model
+                minDetectionConfidence: 0.6, // Increased confidence
+                minTrackingConfidence: 0.6 // Increased confidence
+            });
+
+            hands.onResults(onResults);
+
+            // Setup debug toggle
+            debugToggle.addEventListener('change', (e) => {
+                isDebugMode = e.target.checked;
+            });
+
+            infoElement.textContent = 'Status: Accessing Camera...';
+            console.log("Accessing camera...");
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { 
+                        width: 640, 
+                        height: 480, 
+                        facingMode: 'user' // Prefer front camera 
+                    }
+                });
+                videoElement.srcObject = stream;
+                videoElement.onloadedmetadata = () => {
+                    // Set canvas dimensions based on video aspect ratio, fitting container
+                    const container = document.getElementById('game-container');
+                    const aspectRatio = videoElement.videoWidth / videoElement.videoHeight;
+                    let canvasWidth = container.clientWidth;
+                    let canvasHeight = canvasWidth / aspectRatio;
+
+                    if (canvasHeight > container.clientHeight) {
+                        canvasHeight = container.clientHeight;
+                        canvasWidth = canvasHeight * aspectRatio;
+                    }
+
+                    canvasElement.width = canvasWidth;
+                    canvasElement.height = canvasHeight;
+
+                    // Initialize game elements based on canvas size
+                    initializeGameElements();
+
+                    console.log(`Canvas resized to: ${canvasElement.width}x${canvasElement.height}`);
+                    infoElement.textContent = 'Status: Starting detection...';
+                    loadingElement.style.display = 'none'; // Hide loading message
+                    infoElement.style.display = 'block'; // Show status info
+                    gameRunning = true;
+                    lastFrameTime = performance.now();
+                    requestAnimationFrame(gameLoop); // Start the game loop *after* setup
+                    sendToMediaPipe(); // Start sending frames
+                };
+            } catch (err) {
+                console.error("Camera access failed:", err);
+                loadingElement.textContent = 'Error: Camera access denied or failed. Please allow camera permissions.';
+                infoElement.textContent = 'Status: Error';
+            }
+        }
+
+        function initializeGameElements() {
+            // Center car horizontally, place near bottom
+            car.x = canvasElement.width / 2;
+            car.y = canvasElement.height * 0.8;
+            car.angle = 0; // Pointing up
+            car.speed = 0;
+
+            // Track width based on canvas
+            track.width = canvasElement.width * 0.6; // Road takes 60% of canvas width
+        }
+
+        // --- MediaPipe Processing ---
+        async function sendToMediaPipe() {
+            if (!gameRunning) return; // Stop if game isn't running
+
+            // Make sure video is ready
+            if (videoElement.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+                 try {
+                    await hands.send({ image: videoElement });
+                 } catch (error) {
+                     console.error("Error sending frame to MediaPipe:", error);
+                 }
+            }
+            // Request next frame slightly delayed to avoid overloading
+             requestAnimationFrame(sendToMediaPipe);
+            //setTimeout(sendToMediaPipe, 50); // Adjust timing if needed
+        }
+
+        function onResults(results) {
+            if (!gameRunning || !results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
+                // No hand detected or game stopped, maybe apply brakes slowly
+                applyBraking(true); // Apply friction/braking if no hand
+                infoElement.textContent = 'Status: No hand detected';
+                return;
+            }
+
+            const landmarks = results.multiHandLandmarks[0]; // Use the first detected hand
+            if (!landmarks) {
+                 applyBraking(true);
+                 infoElement.textContent = 'Status: Landmarks not found';
+                 return;
+            }
+
+            // --- Gesture Recognition ---
+            const currentTime = Date.now();
+            if (currentTime - lastGestureTime < gestureCooldown) {
+                // Skip gesture processing if within cooldown period
+                 return;
+            }
+            lastGestureTime = currentTime;
+
+
+            // 1. Steering (Left/Right) - Use wrist or palm center X position
+            const wrist = landmarks[0]; // Wrist landmark
+            // Normalize x coordinate (0 = left edge, 1 = right edge of video)
+            const handCenterX = wrist.x;
+            const centerThreshold = 0.08; // Tolerance around the center
+
+            let steeringAction = 'straight';
+            if (handCenterX < 0.5 - centerThreshold) {
+                steeringAction = 'left';
+                car.steeringAngle = -car.maxSteering * ((0.5 - handCenterX) / 0.5); // Scale steering by distance from center
+                 infoElement.textContent = 'Status: Steering Left';
+            } else if (handCenterX > 0.5 + centerThreshold) {
+                steeringAction = 'right';
+                car.steeringAngle = car.maxSteering * ((handCenterX - 0.5) / 0.5); // Scale steering
+                 infoElement.textContent = 'Status: Steering Right';
+            } else {
+                steeringAction = 'straight';
+                car.steeringAngle = 0; // Go straight
+                 infoElement.textContent = 'Status: Going Straight';
+            }
+            // Clamp steering angle
+            car.steeringAngle = Math.max(-car.maxSteering, Math.min(car.maxSteering, car.steeringAngle));
+
+
+            // 2. Acceleration/Braking (Open/Close Hand)
+            // Calculate distance between thumb tip (4) and index finger tip (8)
+            const thumbTip = landmarks[4];
+            const indexTip = landmarks[8];
+            const middleTip = landmarks[12]; // Use middle finger too for robustness
+            const pinkyTip = landmarks[20]; // Use pinky finger too
+
+             // Calculate average distance from wrist to fingertips
+            const wristY = landmarks[0].y;
+            const avgFingerTipY = (landmarks[8].y + landmarks[12].y + landmarks[16].y + landmarks[20].y) / 4;
+            const verticalSpan = Math.abs(wristY - avgFingerTipY); // Vertical distance
+
+             // Calculate rough horizontal span (e.g., thumb tip to pinky tip)
+            const horizontalSpan = Math.abs(landmarks[4].x - landmarks[20].x);
+
+             // Estimate "openness" - larger span means more open
+            const openness = Math.sqrt(verticalSpan*verticalSpan + horizontalSpan*horizontalSpan); // Combine spans
+
+            // Dynamically adjust thresholds based on hand size in frame
+            // This helps with different distances from camera
+            const handSize = Math.abs(landmarks[0].y - landmarks[9].y); // Distance from wrist to middle finger base
+            const openThreshold = Math.max(0.15, handSize * 0.8); // Adjust based on hand size
+            const closedThreshold = Math.min(0.10, handSize * 0.5); // Adjust based on hand size
+
+            let throttleAction = 'neutral';
+            if (openness > openThreshold) {
+                throttleAction = 'accelerate';
+                applyAcceleration();
+                 infoElement.textContent += ' | Accelerating';
+            } else if (openness < closedThreshold) {
+                throttleAction = 'brake';
+                applyBraking(false); // Apply active braking
+                 infoElement.textContent += ' | Braking';
+            } else {
+                 throttleAction = 'neutral';
+                 applyBraking(true); // Apply friction only
+                 infoElement.textContent += ' | Coasting';
+            }
+
+            // --- Debug Drawing ---
+            if (isDebugMode) {
+                drawHandLandmarks(landmarks);
+                
+                // Display openness value for tuning
+                canvasCtx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                canvasCtx.font = '12px Arial';
+                canvasCtx.fillText(`Openness: ${openness.toFixed(3)}`, 10, canvasElement.height - 30);
+                canvasCtx.fillText(`Thresholds - Open: ${openThreshold.toFixed(3)}, Closed: ${closedThreshold.toFixed(3)}`, 10, canvasElement.height - 15);
+            }
+        }
+
+        function applyAcceleration() {
+             if (car.speed < car.maxSpeed) {
+                car.speed += car.acceleration;
+            }
+             car.speed = Math.min(car.speed, car.maxSpeed); // Clamp speed
+        }
+
+        function applyBraking(isFrictionOnly = false) {
+            const brakeForce = isFrictionOnly ? car.friction : car.braking;
+             if (car.speed > 0) {
+                car.speed -= brakeForce;
+            } else if (car.speed < 0) { // Handle potential reverse (though not implemented)
+                 car.speed += brakeForce;
+            }
+             // Prevent speed from oscillating around zero
+            if (Math.abs(car.speed) < brakeForce) {
+                car.speed = 0;
+            }
+        }
+
+
+        // --- Game Loop ---
+        function gameLoop(timestamp) {
+            if (!gameRunning) return;
+
+            // Calculate FPS
+            const deltaTime = timestamp - lastFrameTime;
+            if (deltaTime > 0) {
+                fps = 1000 / deltaTime;
+            }
+            lastFrameTime = timestamp;
+
+            updateGame();
+            drawGame();
+
+            // Draw FPS if in debug mode
+            if (isDebugMode) {
+                canvasCtx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                canvasCtx.font = '12px Arial';
+                canvasCtx.fillText(`FPS: ${fps.toFixed(1)}`, 10, 20);
+                canvasCtx.fillText(`Speed: ${car.speed.toFixed(2)}`, 10, 40);
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // --- Game Logic Update ---
+        function updateGame() {
+            // Apply friction if not accelerating or braking strongly
+            if (car.speed !== 0 && infoElement.textContent.includes('Coasting')) {
+                 applyBraking(true); // Apply friction
+            }
+
+            // Update car angle based on steering ONLY if moving
+             if (car.speed !== 0) {
+                const turnFactor = Math.abs(car.speed) / car.maxSpeed; // Turn more sharply at higher speeds (or less, depending on desired physics)
+                car.angle += car.steeringAngle * turnFactor; // Adjust angle based on current speed
+             }
+
+
+            // Update car position based on speed and angle
+            const angleRad = (car.angle - 90) * Math.PI / 180; // Convert degrees to radians (adjusting for 0 degrees = up)
+            car.x += car.speed * Math.cos(angleRad);
+            car.y += car.speed * Math.sin(angleRad);
+
+            // Keep car within rough track boundaries (simple horizontal check)
+             const trackLeftEdge = (canvasElement.width - track.width) / 2 + car.width / 2;
+             const trackRightEdge = canvasElement.width - (canvasElement.width - track.width) / 2 - car.width / 2;
+
+             if (car.x < trackLeftEdge) {
+                 car.x = trackLeftEdge;
+                 car.speed *= 0.5; // Slow down on hitting edge
+             }
+             if (car.x > trackRightEdge) {
+                 car.x = trackRightEdge;
+                 car.speed *= 0.5; // Slow down
+             }
+
+            // Keep car within vertical bounds (prevent going off screen)
+            if (car.y < car.height / 2) {
+                car.y = car.height / 2;
+                car.speed = 0; // Stop if hitting top boundary
+            }
+            if (car.y > canvasElement.height - car.height / 2) {
+                car.y = canvasElement.height - car.height / 2;
+                // Optional: Reset position or stop if hitting bottom boundary
+                // car.speed = 0;
+            }
+        }
+
+        // --- Drawing ---
+        function drawGame() {
+            // Clear canvas
+            canvasCtx.fillStyle = track.roadColor; // Road color
+            canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+
+            // Draw Track Edges and Center Line
+            const trackCenterX = canvasElement.width / 2;
+            const trackLeft = trackCenterX - track.width / 2;
+            const trackRight = trackCenterX + track.width / 2;
+
+            // Edges
+            canvasCtx.strokeStyle = track.edgeColor;
+            canvasCtx.lineWidth = track.edgeWidth;
+            canvasCtx.beginPath();
+            canvasCtx.moveTo(trackLeft, 0);
+            canvasCtx.lineTo(trackLeft, canvasElement.height);
+            canvasCtx.moveTo(trackRight, 0);
+            canvasCtx.lineTo(trackRight, canvasElement.height);
+            canvasCtx.stroke();
+
+            // Center Line (Dashed)
+            canvasCtx.strokeStyle = track.lineColor;
+            canvasCtx.lineWidth = track.lineWidth;
+            canvasCtx.setLineDash([track.dashLength, track.gapLength]);
+             // Animate the dashes by offsetting the dash pattern based on car's forward movement
+            const dashOffset = -(car.y * 0.5) % (track.dashLength + track.gapLength); // Simple scroll effect
+            canvasCtx.lineDashOffset = dashOffset;
+            canvasCtx.beginPath();
+            canvasCtx.moveTo(trackCenterX, 0);
+            canvasCtx.lineTo(trackCenterX, canvasElement.height);
+            canvasCtx.stroke();
+            canvasCtx.setLineDash([]); // Reset line dash
+
+            // Draw Car
+            canvasCtx.save(); // Save current context state
+            canvasCtx.translate(car.x, car.y); // Move origin to car's center
+            canvasCtx.rotate(car.angle * Math.PI / 180); // Rotate context
+            canvasCtx.fillStyle = car.color;
+            
+            // Draw car body (slightly rounded rectangle)
+            canvasCtx.beginPath();
+            const cornerRadius = 3;
+            canvasCtx.moveTo(-car.width/2 + cornerRadius, -car.height/2);
+            canvasCtx.lineTo(car.width/2 - cornerRadius, -car.height/2);
+            canvasCtx.quadraticCurveTo(car.width/2, -car.height/2, car.width/2, -car.height/2 + cornerRadius);
+            canvasCtx.lineTo(car.width/2, car.height/2 - cornerRadius);
+            canvasCtx.quadraticCurveTo(car.width/2, car.height/2, car.width/2 - cornerRadius, car.height/2);
+            canvasCtx.lineTo(-car.width/2 + cornerRadius, car.height/2);
+            canvasCtx.quadraticCurveTo(-car.width/2, car.height/2, -car.width/2, car.height/2 - cornerRadius);
+            canvasCtx.lineTo(-car.width/2, -car.height/2 + cornerRadius);
+            canvasCtx.quadraticCurveTo(-car.width/2, -car.height/2, -car.width/2 + cornerRadius, -car.height/2);
+            canvasCtx.closePath();
+            canvasCtx.fill();
+            
+            // Add a front indicator
+            canvasCtx.fillStyle = '#eee';
+            canvasCtx.fillRect(-car.width / 4, -car.height / 2 - 2, car.width / 2, 4);
+            
+            // Add 'wheels' - small black rectangles
+            canvasCtx.fillStyle = '#333';
+            // Front wheels
+            canvasCtx.fillRect(-car.width/2 - 2, -car.height/3, 4, 8);
+            canvasCtx.fillRect(car.width/2 - 2, -car.height/3, 4, 8);
+            // Rear wheels
+            canvasCtx.fillRect(-car.width/2 - 2, car.height/3 - 8, 4, 8);
+            canvasCtx.fillRect(car.width/2 - 2, car.height/3 - 8, 4, 8);
+            
+            canvasCtx.restore(); // Restore context state
+            
+            // Draw camera view if in debug mode
+            if (isDebugMode && videoElement.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+                // Draw a small preview of the camera in bottom corner
+                const previewSize = canvasElement.width * 0.2; // 20% of canvas width
+                const previewX = canvasElement.width - previewSize - 10;
+                const previewY = canvasElement.height - previewSize - 10;
+                
+                try {
+                    canvasCtx.drawImage(
+                        videoElement, 
+                        previewX, previewY, 
+                        previewSize, previewSize * (videoElement.videoHeight / videoElement.videoWidth)
+                    );
+                    
+                    // Add a border
+                    canvasCtx.strokeStyle = 'white';
+                    canvasCtx.lineWidth = 2;
+                    canvasCtx.strokeRect(
+                        previewX, previewY, 
+                        previewSize, previewSize * (videoElement.videoHeight / videoElement.videoWidth)
+                    );
+                } catch (e) {
+                    console.error("Error drawing video preview:", e);
+                }
+            }
+        }
+
+        // --- Debug Drawing for Hand ---
+        function drawHandLandmarks(landmarks) {
+            if (!isDebugMode) return;
+            
+            canvasCtx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            canvasCtx.font = '12px Arial';
+            canvasCtx.fillText(`Hand X: ${landmarks[0].x.toFixed(2)}`, 10, canvasElement.height - 50);
+
+            for (const landmark of landmarks) {
+                const x = landmark.x * canvasElement.width;
+                const y = landmark.y * canvasElement.height;
+                canvasCtx.beginPath();
+                canvasCtx.arc(x, y, 5, 0, 2 * Math.PI);
+                canvasCtx.fillStyle = 'red';
+                canvasCtx.fill();
+            }
+            
+            // Draw connections between landmarks for better visualization
+            canvasCtx.strokeStyle = 'rgba(255, 255, 0, 0.7)';
+            canvasCtx.lineWidth = 2;
+            
+            // Connect fingers
+            const fingerConnections = [
+                // Thumb
+                [0, 1], [1, 2], [2, 3], [3, 4],
+                // Index
+                [0, 5], [5, 6], [6, 7], [7, 8],
+                // Middle
+                [0, 9], [9, 10], [10, 11], [11, 12],
+                // Ring
+                [0, 13], [13, 14], [14, 15], [15, 16],
+                // Pinky
+                [0, 17], [17, 18], [18, 19], [19, 20]
+            ];
+            
+            for (const [i, j] of fingerConnections) {
+                canvasCtx.beginPath();
+                canvasCtx.moveTo(
+                    landmarks[i].x * canvasElement.width,
+                    landmarks[i].y * canvasElement.height
+                );
+                canvasCtx.lineTo(
+                    landmarks[j].x * canvasElement.width,
+                    landmarks[j].y * canvasElement.height
+                );
+                canvasCtx.stroke();
+            }
+            
+            // Draw line between thumb and index finger tip for open/close debug
+            const thumbTip = landmarks[4];
+            const indexTip = landmarks[8];
+            canvasCtx.beginPath();
+            canvasCtx.moveTo(thumbTip.x * canvasElement.width, thumbTip.y * canvasElement.height);
+            canvasCtx.lineTo(indexTip.x * canvasElement.width, indexTip.y * canvasElement.height);
+            canvasCtx.strokeStyle = 'lime';
+            canvasCtx.lineWidth = 3;
+            canvasCtx.stroke();
+        }
+
+        // --- Resize Handling ---
+         function handleResize() {
+             const container = document.getElementById('game-container');
+             if (!container || !videoElement.videoWidth) return; // Ensure elements and video data exist
+
+             const aspectRatio = videoElement.videoWidth / videoElement.videoHeight;
+             let canvasWidth = container.clientWidth;
+             let canvasHeight = canvasWidth / aspectRatio;
+
+             if (canvasHeight > container.clientHeight) {
+                 canvasHeight = container.clientHeight;
+                 canvasWidth = canvasHeight * aspectRatio;
+             }
+
+             // Only resize if dimensions actually change significantly
+             if (Math.abs(canvasElement.width - canvasWidth) > 1 || Math.abs(canvasElement.height - canvasHeight) > 1) {
+                 console.log(`Resizing canvas to: ${canvasWidth}x${canvasHeight}`);
+                 canvasElement.width = canvasWidth;
+                 canvasElement.height = canvasHeight;
+                 initializeGameElements(); // Re-initialize positions based on new size
+                 // No need to restart game loop, just redraw
+                 if (gameRunning) drawGame();
+             }
+         }
+
+         // Debounce resize handler
+         let resizeTimeout;
+         window.addEventListener('resize', () => {
+             clearTimeout(resizeTimeout);
+             resizeTimeout = setTimeout(handleResize, 100); // Wait 100ms after resize stops
+         });
+
+
+        // --- Start Everything ---
+        window.onload = () => {
+             // Initial setup call
+             setupHandTracking();
+             // Initial resize call to set correct canvas size
+             handleResize();
+        };
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Raymarched Fractal Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            color: white;
+            font-family: sans-serif;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw !important;
+            height: 100vh !important;
+        }
+
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+            border-radius: 4px;
+            border: 2px solid #1f2937;
+        }
+
+        /* Range input styling */
+        input[type="range"] {
+            @apply w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            @apply w-4 h-4 bg-blue-500 rounded-full appearance-none hover:bg-blue-600 transition-colors;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            @apply w-4 h-4 bg-blue-500 rounded-full appearance-none hover:bg-blue-600 transition-colors;
+        }
+    </style>
+</head>
+
+<body class="bg-black">
+    <div id="container" class="relative w-screen h-screen"></div>
+    
+    <!-- UI Panel with Tailwind CSS -->
+    <div id="ui-panel" class="absolute top-4 left-4 bg-gray-900/90 p-4 rounded-lg max-w-sm max-h-[calc(100vh-2rem)] overflow-y-auto text-gray-300 text-sm">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-white">Fractal Explorer</h2>
+            <button id="toggleUI" class="text-gray-400 hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="controls" class="space-y-4">
+            <div class="space-y-3">
+                <label class="block text-gray-400 font-semibold">
+                    Fractal Type
+                    <select id="fractalType" class="mt-1 w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="0">Mandelbulb</option>
+                        <option value="1">Mandelbox</option>
+                    </select>
+                </label>
+
+                <label class="block text-gray-400 font-semibold">
+                    Iterations <span id="iterationsValue" class="float-right text-white">64</span>
+                    <input type="range" id="iterations" class="mt-2" min="4" max="256" step="1" value="64">
+                </label>
+
+                <div id="powerGroup">
+                    <label class="block text-gray-400 font-semibold">
+                        Mandelbulb Power <span id="powerValue" class="float-right text-white">8.0</span>
+                        <input type="range" id="power" class="mt-2" min="2.0" max="20.0" step="0.1" value="8.0">
+                    </label>
+                </div>
+
+                <div id="boxFoldGroup" class="hidden space-y-3">
+                    <label class="block text-gray-400 font-semibold">
+                        Box Fold Limit <span id="boxFoldLimitValue" class="float-right text-white">1.0</span>
+                        <input type="range" id="boxFoldLimit" class="mt-2" min="0.5" max="2.5" step="0.05" value="1.0">
+                    </label>
+                    <label class="block text-gray-400 font-semibold">
+                        Box Min RadiusSq <span id="boxMinRadiusValue" class="float-right text-white">0.5</span>
+                        <input type="range" id="boxMinRadius" class="mt-2" min="0.01" max="2.0" step="0.01" value="0.5">
+                    </label>
+                    <label class="block text-gray-400 font-semibold">
+                        Box Fixed RadiusSq <span id="boxFixedRadiusValue" class="float-right text-white">1.0</span>
+                        <input type="range" id="boxFixedRadius" class="mt-2" min="0.1" max="5.0" step="0.1" value="1.0">
+                    </label>
+                    <label class="block text-gray-400 font-semibold">
+                        Box Scale <span id="boxScaleValue" class="float-right text-white">-1.5</span>
+                        <input type="range" id="boxScale" class="mt-2" min="-3.0" max="-0.5" step="0.1" value="-1.5">
+                    </label>
+                </div>
+
+                <label class="block text-gray-400 font-semibold">
+                    Color Palette
+                    <select id="colorPalette" class="mt-1 w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="0">Electric Blue/Gold</option>
+                        <option value="1">Psychedelic Rainbow</option>
+                        <option value="2">Deep Space</option>
+                        <option value="3">Fiery Nebula</option>
+                        <option value="4">Monochrome Glow</option>
+                    </select>
+                </label>
+
+                <label class="flex items-center space-x-2 text-gray-400 font-semibold">
+                    <input type="checkbox" id="smoothColor" class="w-4 h-4 bg-gray-800 border-gray-700 rounded text-blue-500 focus:ring-blue-500" checked>
+                    <span>Smooth Coloring</span>
+                </label>
+
+                <label class="block text-gray-400 font-semibold">
+                    Ambient Occlusion <span id="aoAmountValue" class="float-right text-white">0.5</span>
+                    <input type="range" id="aoAmount" class="mt-2" min="0.0" max="1.0" step="0.05" value="0.5">
+                </label>
+
+                <label class="block text-gray-400 font-semibold">
+                    Glow Effect <span id="glowAmountValue" class="float-right text-white">0.1</span>
+                    <input type="range" id="glowAmount" class="mt-2" min="0.0" max="0.5" step="0.01" value="0.1">
+                </label>
+            </div>
+
+            <div class="pt-2 border-t border-gray-700">
+                <button id="resetViewButton" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Reset View
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GLSL Shaders -->
+    <script id="vertexShader" type="x-shader/x-vertex">
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    </script>
+
+    <script id="fragmentShader" type="x-shader/x-fragment">
+        precision highp float; // Essential for fractal detail!
+        precision highp int;
+
+        varying vec2 vUv;
+
+        uniform vec2 u_resolution;
+        uniform float u_time;
+        uniform vec3 u_cameraPos;
+        uniform vec3 u_cameraTarget; // Point camera is looking at
+        uniform float u_cameraFov;  // Camera Field of View (degrees)
+
+        // Fractal Parameters
+        uniform int u_fractalType; // 0: Mandelbulb, 1: Mandelbox
+        uniform int u_maxIterations;
+        uniform float u_power; // Mandelbulb power
+        uniform float u_boxFoldLimit; // Mandelbox param
+        uniform float u_boxMinRadiusSq; // Mandelbox param
+        uniform float u_boxFixedRadiusSq; // Mandelbox param
+        uniform float u_boxScale; // Mandelbox param
+
+        // Rendering Parameters
+        uniform float u_bailout; // Escape radius
+        uniform float u_epsilon; // Small distance threshold for hit & normal calc
+        uniform float u_maxDist; // Max ray distance
+        uniform int u_colorPalette;
+        uniform bool u_smoothColor;
+        uniform float u_aoAmount;
+        uniform float u_glowAmount;
+
+        // Constants
+        const float PI = 3.14159265359;
+        const float DEG_TO_RAD = PI / 180.0;
+
+        // --- Distance Estimator Functions ---
+
+        // Mandelbulb DE by Inigo Quilez
+        float DE_Mandelbulb(vec3 pos, float power) {
+            vec3 z = pos;
+            float dr = 1.0;
+            float r = 0.0;
+            for (int i = 0; i < 10; i++) { // Use fewer iterations for DE itself for performance
+                r = length(z);
+                if (r > u_bailout) break;
+
+                // Convert to polar coordinates
+                float theta = acos(z.z / r);
+                float phi = atan(z.y, z.x);
+                dr = pow(r, power - 1.0) * power * dr + 1.0;
+
+                // Scale and rotate the point
+                float zr = pow(r, power);
+                theta = theta * power;
+                phi = phi * power;
+
+                // Convert back to Cartesian coordinates
+                z = zr * vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+                z += pos;
+            }
+            // Note: This is a simplified DE. Full Mandelbulb DE is more complex.
+            // This provides a bulb-like shape, good enough for visualization.
+            // A more accurate DE often uses the formula |z_{n+1}-z_n|/|dz_{n+1}/dz_n|
+            // But the basic distance is often used: 0.5 * log(r) * r / dr;
+             return 0.5 * log(r) * r / dr;
+             // Even simpler approximation for visualization:
+             // return (length(z) - 2.0) / 3.0; // Adjust constants for scale
+        }
+
+        // Mandelbox DE by Tom Lowe / Jérémie Brunet
+        // Box folding operation
+        vec3 boxFold(vec3 z, float foldingLimit) {
+            return clamp(z, -foldingLimit, foldingLimit) * 2.0 - z;
+        }
+        // Ball folding operation
+        vec3 ballFold(vec3 z, float minRadiusSq, float fixedRadiusSq) {
+            float r2 = dot(z, z);
+            if (r2 < minRadiusSq) {
+                // linear scale
+                float temp = (fixedRadiusSq / minRadiusSq);
+                z *= temp;
+            } else if (r2 < fixedRadiusSq) {
+                // sphere inversion
+                float temp = (fixedRadiusSq / r2);
+                z *= temp;
+            }
+            return z;
+        }
+        float DE_Mandelbox(vec3 pos, float scale, float minRadiusSq, float fixedRadiusSq, float foldingLimit) {
+            vec3 offset = pos;
+            vec3 z = pos;
+            float dr = 1.0; // scale factor for distance estimation
+
+            for (int i = 0; i < 15; i++) { // Use fewer iterations for DE
+                z = boxFold(z, foldingLimit);
+                z = ballFold(z, minRadiusSq, fixedRadiusSq);
+
+                z = z * scale + offset;
+
+                dr = dr * abs(scale) + 1.0;
+            }
+            float r = length(z);
+            return r / abs(dr);
+        }
+
+        // Main Distance Estimator - Chooses based on u_fractalType
+        // Returns distance and stores iteration count in 'res.y'
+        vec2 map(vec3 pos) {
+            float d = u_maxDist;
+            float iter = 0.0; // Use float for potential smooth iteration calculation
+
+            if (u_fractalType == 0) { // Mandelbulb
+                 vec3 z = pos;
+                 float dr = 1.0;
+                 float r = 0.0;
+                 float power = u_power;
+                 for (int i = 0; i < u_maxIterations; i++) {
+                     r = length(z);
+                     if (r > u_bailout) break;
+
+                     float theta = acos(z.z / r);
+                     float phi = atan(z.y, z.x);
+                     dr = pow(r, power - 1.0) * power * dr + 1.0;
+
+                     float zr = pow(r, power);
+                     theta = theta * power;
+                     phi = phi * power;
+
+                     z = zr * vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+                     z += pos;
+                     iter = float(i) + 1.0;
+                 }
+                 d = 0.5 * log(r) * r / dr;
+                 // Smooth iteration count based on final distance from bailout radius
+                 if(u_smoothColor && r <= u_bailout) {
+                      float smoothIter = iter - log2(log(r) / log(u_bailout));
+                      iter = smoothIter;
+                 }
+
+
+            } else if (u_fractalType == 1) { // Mandelbox
+                vec3 offset = pos;
+                vec3 z = pos;
+                float dr = 1.0;
+                float scale = u_boxScale;
+                float minRadiusSq = u_boxMinRadiusSq;
+                float fixedRadiusSq = u_boxFixedRadiusSq;
+                float foldingLimit = u_boxFoldLimit;
+
+                for (int i = 0; i < u_maxIterations; i++) {
+                    z = boxFold(z, foldingLimit);
+                    z = ballFold(z, minRadiusSq, fixedRadiusSq);
+
+                    z = z * scale + offset;
+                    dr = dr * abs(scale) + 1.0;
+
+                    iter = float(i) + 1.0;
+                    // Check bailout *after* applying transforms for Mandelbox
+                    float r = length(z);
+                    if (r > u_bailout) {
+                         if(u_smoothColor) {
+                           float smoothIter = iter - log2(log(r) / log(u_bailout));
+                           iter = smoothIter;
+                         }
+                         break;
+                    }
+                }
+                d = length(z) / abs(dr);
+            }
+
+             // Ensure distance is not negative
+             d = max(0.0, d);
+             // Return distance and iteration count
+             return vec2(d, iter);
+        }
+
+        // Calculate Normal using Tetrahedral sampling (more stable than central diff)
+        vec3 calcNormal(vec3 pos) {
+             vec2 h = vec2(u_epsilon, 0.0);
+             // Use the DE function directly, not the full map() to avoid iteration count calc
+             float d = (u_fractalType == 0) ? DE_Mandelbulb(pos, u_power) : DE_Mandelbox(pos, u_boxScale, u_boxMinRadiusSq, u_boxFixedRadiusSq, u_boxFoldLimit);
+
+             vec3 n = vec3(
+                 d - ((u_fractalType == 0) ? DE_Mandelbulb(pos - h.xyy, u_power) : DE_Mandelbox(pos - h.xyy, u_boxScale, u_boxMinRadiusSq, u_boxFixedRadiusSq, u_boxFoldLimit)),
+                 d - ((u_fractalType == 0) ? DE_Mandelbulb(pos - h.yxy, u_power) : DE_Mandelbox(pos - h.yxy, u_boxScale, u_boxMinRadiusSq, u_boxFixedRadiusSq, u_boxFoldLimit)),
+                 d - ((u_fractalType == 0) ? DE_Mandelbulb(pos - h.yyx, u_power) : DE_Mandelbox(pos - h.yyx, u_boxScale, u_boxMinRadiusSq, u_boxFixedRadiusSq, u_boxFoldLimit))
+             );
+
+//            // Simpler central differences (can be less stable)
+//             vec3 n = vec3(
+//                 map(pos + h.xyy).x - map(pos - h.xyy).x,
+//                 map(pos + h.yxy).x - map(pos - h.yxy).x,
+//                 map(pos + h.yyx).x - map(pos - h.yyx).x
+//             );
+             return normalize(n);
+        }
+
+        // Simple Ambient Occlusion
+        float calcAO(vec3 pos, vec3 nor) {
+            float occ = 0.0;
+            float sca = 1.0;
+            float totalWeight = 0.0;
+            // Sample points slightly offset along the normal
+            for (int i = 0; i < 5; i++) {
+                float hr = 0.01 + 0.1 * float(i) / 4.0; // Step size increases
+                vec3 aopos = pos + nor * hr;
+                float d = map(aopos).x;
+                float weight = 1.0 / pow(2.0, float(i)); // Give more weight to closer samples
+                occ += weight * max(0.0, hr - d); // Occlusion factor
+                totalWeight += weight;
+                // sca *= 0.95; // Attenuate effect for further samples (optional)
+            }
+             // return clamp(1.0 - u_aoAmount * occ * sca, 0.0, 1.0); // Original AO
+            return clamp(1.0 - u_aoAmount * occ / totalWeight, 0.0, 1.0); // Normalized AO
+        }
+
+        // Get Color based on palette index and iterations
+        vec3 getColor(float iterations, vec3 pos, vec3 normal, float ao) {
+            float t = iterations / float(u_maxIterations); // Normalized iteration count [0, 1]
+             t = clamp(t, 0.0, 1.0); // Clamp in case smooth iter goes slightly out
+
+            vec3 col = vec3(0.0);
+
+            // Palette selection
+            if (u_colorPalette == 0) { // Electric Blue/Gold
+                col = 0.5 + 0.5 * cos(6.28318 * (t * vec3(0.1, 0.5, 0.9) + vec3(0.2, 0.1, 0.0)));
+                col = mix(col, vec3(0.9, 0.7, 0.2), smoothstep(0.8, 1.0, t)); // Gold highlights
+            } else if (u_colorPalette == 1) { // Psychedelic Rainbow
+                col = 0.5 + 0.5 * cos(6.28318 * (t * 2.0 + vec3(0.0, 0.33, 0.67)));
+            } else if (u_colorPalette == 2) { // Deep Space
+                 col = mix(vec3(0.0, 0.0, 0.1), vec3(0.8, 0.9, 1.0), pow(t, 0.5));
+                 col = mix(col, vec3(0.1, 0.0, 0.0), pow(length(pos)/u_bailout, 2.0)); // Red tint further out
+            } else if (u_colorPalette == 3) { // Fiery Nebula
+                col = mix(vec3(0.1, 0.0, 0.0), vec3(1.0, 0.9, 0.5), pow(t, 0.6));
+                col = mix(col, vec3(1.0, 0.2, 0.0), smoothstep(0.7, 0.9, t)); // Brighter reds near surface
+            } else if (u_colorPalette == 4) { // Monochrome Glow
+                col = vec3(pow(t, 0.8));
+            }
+
+             // Simple Lighting (Diffuse + Ambient + AO)
+             vec3 lightDir = normalize(vec3(0.5, 0.8, -0.6)); // Example light direction
+             float diffuse = max(0.0, dot(normal, lightDir)) * 0.7 + 0.3; // Base diffuse + ambient light
+
+             col *= diffuse * ao; // Apply lighting and AO
+
+             // Glow effect - add color based on inverse iteration count (brighter near surface)
+             float glow = pow(1.0 - t, 3.0) * u_glowAmount;
+             vec3 glowColor = (u_colorPalette == 4) ? vec3(1.0) : col * 1.5; // White glow for mono, brighter color otherwise
+             col += glow * glowColor;
+
+             return clamp(col, 0.0, 1.0);
+        }
+
+
+        // Camera setup - create view matrix
+        mat3 setCamera(vec3 ro, vec3 ta, float cr) {
+            vec3 cw = normalize(ta - ro);
+            vec3 cp = vec3(sin(cr), cos(cr), 0.0);
+            vec3 cu = normalize(cross(cw, cp));
+            vec3 cv = normalize(cross(cu, cw));
+            return mat3(cu, cv, cw);
+        }
+
+        void main() {
+            // Normalized pixel coordinates (from 0 to 1)
+            vec2 uv = vUv;
+            // Normalized device coordinates (from -1 to 1)
+            vec2 p = (2.0 * gl_FragCoord.xy - u_resolution.xy) / u_resolution.y; // Correct aspect ratio
+
+            // Camera setup
+            vec3 ro = u_cameraPos;
+            vec3 ta = u_cameraTarget;
+            mat3 camMat = setCamera(ro, ta, 0.0); // Roll is 0 for simplicity
+
+             // Calculate FOV factor
+            float fovRadians = u_cameraFov * DEG_TO_RAD;
+            float fovFactor = tan(fovRadians / 2.0);
+
+            // Calculate ray direction
+            vec3 rd = normalize(camMat * vec3(p.xy * fovFactor, 1.0));
+
+
+            // Raymarching
+            float t = 0.0; // Total distance traveled
+            float hitIter = 0.0; // Iteration count at hit
+            vec2 res; // Result from map (distance, iterations)
+
+            for (int i = 0; i < 150; i++) { // Max raymarch steps (adjust for performance)
+                 if (t > u_maxDist) break; // Exceeded max distance
+
+                 vec3 currentPos = ro + rd * t;
+                 res = map(currentPos); // Get distance and iterations
+                 float d = res.x;
+
+                 if (d < u_epsilon) { // Hit!
+                     hitIter = res.y;
+                     // t -= u_epsilon; // Step back slightly to be closer to surface (optional)
+                     break;
+                 }
+
+                 // Advance ray - Use a factor slightly less than 1 to avoid stepping over thin parts
+                 // Or use a minimum step size.
+                 float stepSize = max(d * 0.8, 0.001);
+                 t += stepSize;
+                 hitIter = 0.0; // Reset hit iteration if we didn't hit this step
+             }
+
+
+            // Coloring
+            vec3 col = vec3(0.0); // Background color (black)
+
+            if (hitIter > 0.0 && t <= u_maxDist) { // If we hit something within range
+                vec3 pos = ro + rd * t;
+                vec3 normal = calcNormal(pos);
+                float ao = calcAO(pos, normal);
+                col = getColor(hitIter, pos, normal, ao);
+            } else {
+                // Background gradient (optional)
+                 // float fog = smoothstep(u_maxDist*0.5, u_maxDist, t);
+                 // vec3 skyColor = vec3(0.1, 0.2, 0.3) * (1.0 - 0.5 * rd.y);
+                 // col = mix(col, skyColor, fog);
+                 col = vec3(0.01, 0.01, 0.02); // Deep space blueish background
+            }
+
+             // Gamma correction (approx)
+             col = pow(col, vec3(0.4545));
+
+            gl_FragColor = vec4(col, 1.0);
+        }
+    </script>
+
+    <script type="module">
+        let scene, camera, renderer, material, mesh;
+        let uniforms;
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let cameraAngles = { azimuth: Math.PI * 0.25, elevation: Math.PI * 0.2 }; // Start slightly rotated
+        let cameraDistance = 3.0; // Initial zoom level
+        const target = new THREE.Vector3(0, 0, 0); // Look at origin
+
+        const initialCameraPos = new THREE.Vector3();
+        const initialCameraAngles = { ...cameraAngles };
+        const initialCameraDistance = cameraDistance;
+
+        // UI State
+        let isUIVisible = true;
+
+        function initThree() {
+            const container = document.getElementById('container');
+
+            // Scene
+            scene = new THREE.Scene();
+
+            // Camera
+            const fov = 60;
+            const aspect = window.innerWidth / window.innerHeight;
+            const near = 0.1;
+            const far = 100;
+            camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+            updateCameraPosition();
+
+            // Renderer with better quality
+            renderer = new THREE.WebGLRenderer({ 
+                antialias: true,
+                powerPreference: "high-performance",
+                stencil: false,
+                depth: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap pixel ratio for performance
+            container.appendChild(renderer.domElement);
+
+            // Geometry (Full screen quad)
+            const geometry = new THREE.PlaneGeometry(2, 2);
+
+            // Uniforms (linked to UI controls)
+            uniforms = {
+                u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                u_time: { value: 0.0 },
+                u_cameraPos: { value: camera.position },
+                u_cameraTarget: { value: target },
+                u_cameraFov: { value: fov },
+
+                u_fractalType: { value: 0 }, // 0: Mandelbulb, 1: Mandelbox
+                u_maxIterations: { value: 64 },
+                u_power: { value: 8.0 },
+                u_boxFoldLimit: { value: 1.0 },
+                u_boxMinRadiusSq: { value: 0.5 },
+                u_boxFixedRadiusSq: { value: 1.0 },
+                u_boxScale: { value: -1.5 },
+
+                u_bailout: { value: 4.0 }, // Common bailout radius
+                u_epsilon: { value: 0.0005 }, // Precision for hit detection & normals
+                u_maxDist: { value: 50.0 }, // Max ray travel distance
+                u_colorPalette: { value: 0 },
+                u_smoothColor: { value: true },
+                u_aoAmount: { value: 0.5 },
+                u_glowAmount: { value: 0.1 },
+            };
+
+            // Material
+            material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: document.getElementById('vertexShader').textContent,
+                fragmentShader: document.getElementById('fragmentShader').textContent
+            });
+
+            // Mesh
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            // Event Listeners
+            window.addEventListener('resize', onWindowResize);
+            renderer.domElement.addEventListener('mousedown', onMouseDown);
+            renderer.domElement.addEventListener('mousemove', onMouseMove);
+            renderer.domElement.addEventListener('mouseup', onMouseUp);
+            renderer.domElement.addEventListener('wheel', onMouseWheel, { passive: false });
+
+            initUI(); // Initialize UI controls and link them
+        }
+
+        function updateCameraPosition() {
+            // Calculate position based on spherical coordinates (azimuth, elevation, distance)
+            camera.position.x = cameraDistance * Math.sin(cameraAngles.elevation) * Math.cos(cameraAngles.azimuth);
+            camera.position.y = cameraDistance * Math.cos(cameraAngles.elevation);
+            camera.position.z = cameraDistance * Math.sin(cameraAngles.elevation) * Math.sin(cameraAngles.azimuth);
+            camera.lookAt(target);
+            // No need to update uniform manually if using camera.position directly?
+            // Let's update it explicitly just in case.
+            if (uniforms) {
+                uniforms.u_cameraPos.value.copy(camera.position);
+            }
+        }
+
+        function initUI() {
+            const controls = [
+                { id: 'fractalType', uniform: 'u_fractalType', type: 'int', isSelect: true },
+                { id: 'iterations', uniform: 'u_maxIterations', type: 'int', valueLabel: 'iterationsValue', useGsap: true },
+                { id: 'power', uniform: 'u_power', type: 'float', valueLabel: 'powerValue', useGsap: true },
+                { id: 'boxFoldLimit', uniform: 'u_boxFoldLimit', type: 'float', valueLabel: 'boxFoldLimitValue', useGsap: true },
+                { id: 'boxMinRadius', uniform: 'u_boxMinRadiusSq', type: 'float', valueLabel: 'boxMinRadiusValue', useGsap: true },
+                { id: 'boxFixedRadius', uniform: 'u_boxFixedRadiusSq', type: 'float', valueLabel: 'boxFixedRadiusValue', useGsap: true },
+                { id: 'boxScale', uniform: 'u_boxScale', type: 'float', valueLabel: 'boxScaleValue', useGsap: true },
+                { id: 'colorPalette', uniform: 'u_colorPalette', type: 'int', isSelect: true },
+                { id: 'smoothColor', uniform: 'u_smoothColor', type: 'bool', isCheckbox: true },
+                { id: 'aoAmount', uniform: 'u_aoAmount', type: 'float', valueLabel: 'aoAmountValue', useGsap: true },
+                { id: 'glowAmount', uniform: 'u_glowAmount', type: 'float', valueLabel: 'glowAmountValue', useGsap: true },
+            ];
+
+            controls.forEach(control => {
+                const element = document.getElementById(control.id);
+                const valueLabel = control.valueLabel ? document.getElementById(control.valueLabel) : null;
+
+                const eventType = control.isCheckbox ? 'change' : 'input'; // Use 'change' for select too initially
+
+                element.addEventListener(eventType, (e) => {
+                    let value;
+                    if (control.isCheckbox) {
+                        value = e.target.checked;
+                    } else if (control.isSelect) {
+                        value = control.type === 'int' ? parseInt(e.target.value) : parseFloat(e.target.value);
+                    } else {
+                        value = control.type === 'int' ? parseInt(e.target.value) : parseFloat(e.target.value);
+                        if (valueLabel) valueLabel.textContent = control.type === 'float' ? value.toFixed(control.id === 'power' ? 1 : (control.id === 'boxScale' ? 1 : 2)) : value;
+                    }
+
+                    // Special handling for fractal type change to show/hide relevant params
+                    if (control.id === 'fractalType') {
+                        toggleFractalParams(value);
+                        uniforms[control.uniform].value = value; // Update directly, no GSAP
+                    }
+                    // Use GSAP for smooth transitions on sliders
+                    else if (control.useGsap && !control.isCheckbox) {
+                        gsap.to(uniforms[control.uniform], { value: value, duration: 0.3, ease: "power1.out" });
+                    }
+                    else {
+                        uniforms[control.uniform].value = value; // Update directly
+                    }
+                });
+
+                // Set initial values from uniforms (important if defaults differ)
+                if (control.isCheckbox) {
+                    element.checked = uniforms[control.uniform].value;
+                } else if (control.isSelect) {
+                    element.value = uniforms[control.uniform].value.toString();
+                } else {
+                    element.value = uniforms[control.uniform].value.toString();
+                    if (valueLabel) valueLabel.textContent = control.type === 'float' ? uniforms[control.uniform].value.toFixed(control.id === 'power' ? 1 : (control.id === 'boxScale' ? 1 : 2)) : uniforms[control.uniform].value;
+                }
+
+                // Trigger initial fractal param visibility
+                if (control.id === 'fractalType') {
+                    toggleFractalParams(uniforms.u_fractalType.value);
+                }
+            });
+
+            // Separate handling for select 'change' event if needed (input isn't standard)
+            document.getElementById('fractalType').addEventListener('change', (e) => {
+                const value = parseInt(e.target.value);
+                toggleFractalParams(value);
+                uniforms.u_fractalType.value = value;
+            });
+            document.getElementById('colorPalette').addEventListener('change', (e) => {
+                uniforms.u_colorPalette.value = parseInt(e.target.value);
+            });
+
+
+            // Reset View Button
+            document.getElementById('resetViewButton').addEventListener('click', () => {
+                gsap.to(cameraAngles, {
+                    azimuth: initialCameraAngles.azimuth,
+                    elevation: initialCameraAngles.elevation,
+                    duration: 1.0,
+                    ease: "power2.inOut",
+                    onUpdate: updateCameraPosition
+                });
+                gsap.to(window, { // Target window scope for cameraDistance variable
+                    cameraDistance: initialCameraDistance,
+                    duration: 1.0,
+                    ease: "power2.inOut",
+                    onUpdate: updateCameraPosition
+                });
+            });
+        }
+
+        function toggleFractalParams(fractalType) {
+            const powerGroup = document.getElementById('powerGroup');
+            const boxFoldGroup = document.getElementById('boxFoldGroup');
+            if (fractalType === 0) { // Mandelbulb
+                powerGroup.style.display = 'block';
+                boxFoldGroup.style.display = 'none';
+            } else { // Mandelbox
+                powerGroup.style.display = 'none';
+                boxFoldGroup.style.display = 'block';
+            }
+        }
+
+        function onWindowResize() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            
+            renderer.setSize(width, height);
+            uniforms.u_resolution.value.set(width, height);
+        }
+
+        function onMouseDown(event) {
+            isDragging = true;
+            previousMousePosition.x = event.clientX;
+            previousMousePosition.y = event.clientY;
+        }
+
+        function onMouseMove(event) {
+            if (!isDragging) return;
+
+            const deltaX = event.clientX - previousMousePosition.x;
+            const deltaY = event.clientY - previousMousePosition.y;
+
+            // Adjust angles based on mouse movement
+            // Sensitivity factors - might need tuning
+            cameraAngles.azimuth -= deltaX * 0.005;
+            cameraAngles.elevation -= deltaY * 0.005;
+
+            // Clamp elevation to prevent flipping upside down
+            cameraAngles.elevation = Math.max(0.01, Math.min(Math.PI - 0.01, cameraAngles.elevation));
+
+            previousMousePosition.x = event.clientX;
+            previousMousePosition.y = event.clientY;
+
+            updateCameraPosition();
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+        }
+
+        function onMouseWheel(event) {
+            event.preventDefault();
+            
+            const zoomSpeed = 0.001;
+            const delta = -Math.sign(event.deltaY);
+            const factor = 0.05;
+            
+            // Exponential zoom for smoother feel
+            cameraDistance *= Math.pow(1 + factor, delta);
+            
+            // Clamp distance
+            cameraDistance = Math.max(1.5, Math.min(20.0, cameraDistance));
+            
+            // Smooth transition with GSAP
+            gsap.to(camera.position, {
+                x: cameraDistance * Math.sin(cameraAngles.elevation) * Math.cos(cameraAngles.azimuth),
+                y: cameraDistance * Math.cos(cameraAngles.elevation),
+                z: cameraDistance * Math.sin(cameraAngles.elevation) * Math.sin(cameraAngles.azimuth),
+                duration: 0.3,
+                ease: "power2.out",
+                onUpdate: () => {
+                    camera.lookAt(target);
+                    uniforms.u_cameraPos.value.copy(camera.position);
+                }
+            });
+        }
+
+        // UI Toggle functionality
+        document.getElementById('toggleUI').addEventListener('click', () => {
+            const controls = document.getElementById('controls');
+            const toggleBtn = document.getElementById('toggleUI');
+            
+            isUIVisible = !isUIVisible;
+            
+            if (isUIVisible) {
+                controls.classList.remove('hidden');
+                gsap.fromTo(controls, 
+                    { opacity: 0, x: -20 },
+                    { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }
+                );
+                toggleBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                `;
+            } else {
+                gsap.to(controls, {
+                    opacity: 0,
+                    x: -20,
+                    duration: 0.3,
+                    ease: "power2.in",
+                    onComplete: () => controls.classList.add('hidden')
+                });
+                toggleBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                `;
+            }
+        });
+
+        function animate(time) {
+            requestAnimationFrame(animate);
+
+            // Update time uniform (convert ms to seconds)
+            uniforms.u_time.value = time * 0.001;
+
+            // Update camera position uniform explicitly before render
+            uniforms.u_cameraPos.value.copy(camera.position);
+
+            renderer.render(scene, camera);
+        }
+
+        // Start
+        initThree();
+        animate(0); // Start animation loop
+
+    </script>
+</body>
+
+</html>

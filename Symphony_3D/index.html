@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neural Symphony - 3D Data Sculpture</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #000;
+      color: #fff;
+    }
+
+    #container {
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    #controls {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      border-radius: 8px;
+      z-index: 10;
+      font-family: sans-serif;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.9em;
+    }
+
+    input[type="range"] {
+      width: 200px;
+    }
+
+    button {
+      background-color: #4a5568;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2d3748;
+    }
+
+    #tooltip {
+      position: absolute;
+      display: none;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.8);
+      color: #000;
+      border-radius: 4px;
+      pointer-events: none;
+      /* Important so it doesn't interfere with mouse events on canvas */
+      font-size: 0.8em;
+      z-index: 100;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container"></div>
+  <div id="tooltip"></div>
+
+  <div id="controls" class="text-gray-300">
+    <h2 class="text-lg font-bold mb-2">Neural Symphony Controls</h2>
+    <div>
+      <label for="timeSlider">Time Step: <span id="timeValue">0</span></label>
+      <input type="range" id="timeSlider" min="0" max="100" value="0" step="1">
+    </div>
+    <div>
+      <button id="playPauseBtn">Play</button>
+      <label for="playSpeed" class="mt-2">Speed:</label>
+      <input type="range" id="playSpeed" min="1" max="10" value="5" step="1">
+    </div>
+    <div class="mt-2 text-sm">
+      Nodes: <span id="nodeCount">0</span> | Connections: <span id="connectionCount">0</span>
+    </div>
+  </div>
+
+  <!-- Libraries (use specific versions if needed, or latest) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <!-- OrbitControls -->
+  <script type="module"> // Use type="module" for imports
+    import { OrbitControls } from 'https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js';
+    window.OrbitControls = OrbitControls; // Make it globally accessible for the main script
+  </script>
+  <!-- Main Script -->
+  <script src="script.js" type="module"></script> <!-- Use type="module" -->
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Styles needed alongside Tailwind utilities */
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif; /* Use Inter font */
+    overscroll-behavior: none; /* Prevent pull-to-refresh */
+  }
+}
+
+@layer utilities {
+  /* Keep necessary styles for canvas */
+  #pixelCanvas {
+    cursor: crosshair;
+    image-rendering: pixelated; /* Ensure crisp pixels */
+    touch-action: none; /* Prevent scrolling on canvas touch */
+    /* Base background/border handled by utilities on element */
+  }
+
+  /* Style for the grid lines - Kept as JS manipulates this class */
+  .grid-pattern {
+    background-size: var(--pixel-size) var(--pixel-size);
+    background-image:
+      linear-gradient(to right, #d1d5db 1px, transparent 1px),
+      linear-gradient(to bottom, #d1d5db 1px, transparent 1px);
+    background-position: -1px -1px; /* Offset slightly to align with pixels */
+  }
+}
+
+/* 
+   Theme customizations can go here if not using Tailwind config 
+   Example from original file:
+   @theme {
+      --color-clifford: #da373d;
+   }
+   Note: The V4 browser build might not fully support @theme yet. 
+   Customizations might need a build step or use CSS variables directly.
+*/ 

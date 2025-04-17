@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Net Symphony</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- p5.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <!-- p5.sound.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.min.js"></script>
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        /* Basic body styling to center canvas */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #111827;
+            /* Tailwind gray-900 */
+            color: #d1d5db;
+            /* Tailwind gray-300 */
+            overflow: hidden;
+            /* Prevent scrollbars from canvas */
+            font-family: sans-serif;
+        }
+
+        #canvas-container {
+            border: 1px solid #374151;
+            /* Tailwind gray-700 */
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+            /* Deep sky blue glow */
+        }
+
+        canvas {
+            display: block;
+            /* Removes extra space below canvas */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-gray-300 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="text-center mb-4">
+        <h1 class="text-3xl font-bold text-cyan-400 mb-2">Neural Net Symphony</h1>
+        <p class="text-gray-400">Click on the leftmost nodes to start a pulse.</p>
+        <p class="text-xs text-gray-500 mt-1">(Sound enabled - requires user interaction first)</p>
+    </div>
+
+    <!-- Container for the p5.js canvas -->
+    <div id="canvas-container" class="shadow-lg"></div>
+
+    <!-- Link to our sketch file -->
+    <script src="sketch.js"></script>
+
+</body>
+
+</html>

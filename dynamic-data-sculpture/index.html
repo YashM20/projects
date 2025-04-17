@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced 3D Data Sculpture</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #111827;
+            /* bg-gray-900 */
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #ui-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(31, 41, 55, 0.8);
+            /* bg-gray-800 with opacity */
+            padding: 15px 25px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        #timeSlider {
+            width: 300px;
+            cursor: pointer;
+        }
+
+        /* Style slider thumb */
+        #timeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #3b82f6;
+            /* bg-blue-500 */
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        #timeSlider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #3b82f6;
+            /* bg-blue-500 */
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            /* Important for Firefox */
+        }
+
+        /* Style slider track */
+        #timeSlider::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #4b5563;
+            /* bg-gray-600 */
+            border-radius: 2px;
+        }
+
+        #timeSlider::-moz-range-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #4b5563;
+            /* bg-gray-600 */
+            border-radius: 2px;
+        }
+
+        #advanced-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(31, 41, 55, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+            min-width: 250px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: #E5E7EB;
+            font-weight: 500;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+
+        .control-group select {
+            width: 100%;
+            padding: 8px;
+            background: rgba(55, 65, 81, 0.9);
+            border: 1px solid #4B5563;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
+
+        .btn {
+            background-color: #3B82F6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9em;
+            border: none;
+            width: 100%;
+            margin: 5px 0;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #2563EB;
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .stats {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(31, 41, 55, 0.9);
+            padding: 15px;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.9em;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats div {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .stats span {
+            font-weight: 600;
+            color: #60A5FA;
+        }
+
+        /* Node label styling */
+        .node-label {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            max-width: 200px;
+        }
+
+        .node-label div {
+            margin: 4px 0;
+            line-height: 1.4;
+        }
+
+        .node-label .font-bold {
+            color: #60A5FA;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        /* Slider styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 6px;
+            background: #4B5563;
+            border-radius: 3px;
+            background-image: linear-gradient(#3B82F6, #3B82F6);
+            background-repeat: no-repeat;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #3B82F6;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #3B82F6;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s;
+            border: none;
+        }
+
+        input[type="range"]::-moz-range-thumb:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body class="text-gray-200 font-sans">
+    <div id="container"></div>
+
+    <div id="ui-controls">
+        <label for="timeSlider" class="text-sm whitespace-nowrap">Time Step:</label>
+        <input type="range" id="timeSlider" min="0" max="4" value="0" step="1">
+        <span id="timeLabel" class="text-sm font-semibold w-8 text-center">0</span>
+    </div>
+
+    <div id="advanced-controls">
+        <div class="control-group">
+            <label>Visualization Mode</label>
+            <select id="vizMode">
+                <option value="default">Default View</option>
+                <option value="clusters">Show Clusters</option>
+                <option value="categories">Group by Category</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Node Size Scale</label>
+            <input type="range" id="nodeSizeScale" min="0.5" max="5" value="1" step="0.1">
+        </div>
+
+        <div class="control-group">
+            <label>Link Opacity</label>
+            <input type="range" id="linkOpacity" min="0" max="1" value="0.5" step="0.1">
+        </div>
+
+        <div class="control-group">
+            <label>Animation Speed</label>
+            <input type="range" id="animationSpeed" min="0.5" max="2" value="1" step="0.1">
+        </div>
+
+        <button class="btn" id="resetCamera">Reset Camera</button>
+        <button class="btn" id="toggleAutoRotate">Auto Rotate</button>
+        <button class="btn" id="toggleStats">Show Stats</button>
+    </div>
+
+    <div id="stats" class="stats" style="display: none;">
+        <div>Nodes: <span id="nodeCount">0</span></div>
+        <div>Links: <span id="linkCount">0</span></div>
+        <div>FPS: <span id="fps">0</span></div>
+    </div>
+
+    <!-- Library CDNs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://mrdoob.github.io/stats.js/build/stats.min.js"></script>
+
+    <!-- Your custom script -->
+    <script src="script.js"></script>
+</body>
+
+</html>
