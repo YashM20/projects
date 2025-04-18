@@ -6,17 +6,17 @@ A collection of interactive projects by Yash M.
 
 ## Project Directory
 
-| Project Name | Category | Live Demo |
-|--------------|----------|-----------|
-| PixelArt | Digital Art | [View Live](https://yashm20.github.io/projects/pixelart/index.html) |
-| Dynamic-Data-Sculpture | Data Art | [View Live](https://yashm20.github.io/projects/dynamic-data-sculpture/index.html) |
-| NeuralNet_Symphony | AI & Audio | [View Live](https://yashm20.github.io/projects/NeuralNet_Symphony/index.html) |
-| Isometric_Patterns | Generative Art | [View Live](https://yashm20.github.io/projects/isometric_patterns/index.html) |
-| 3D_Ecosystem_Simulation | 3D Simulation | [View Live](https://yashm20.github.io/projects/3D_Ecosystem_Simulation/index.html) |
-| Fractal_Explorer | Fractals | [View Live](https://yashm20.github.io/projects/Fractal_Explorer/index.html) |
-| Audio-Driven-Particles | Audio Visualization | [View Live](https://yashm20.github.io/projects/Audio-Driven-Particles/index.html) |
-| Symphony_3D | Audio Visualization | [View Live](https://yashm20.github.io/projects/Symphony_3D/index.html) |
-| Ather_Weavers | Digital Art | [View Live](https://yashm20.github.io/projects/Ather_Weavers/index.html) |
+| Project Name | Category | Live Demo | Source |
+|--------------|----------|-----------|--------|
+| PixelArt | Digital Art | [View Live](https://yashm20.github.io/projects/pixelart/index.html) | [View Source](./PixelArt/index.html) |
+| Dynamic-Data-Sculpture | Data Art | [View Live](https://yashm20.github.io/projects/dynamic-data-sculpture/index.html) | [View Source](./Dynamic-Data-Sculpture/index.html) |
+| NeuralNet_Symphony | AI & Audio | [View Live](https://yashm20.github.io/projects/NeuralNet_Symphony/index.html) | [View Source](./NeuralNet_Symphony/index.html) |
+| Isometric_Patterns | Generative Art | [View Live](https://yashm20.github.io/projects/isometric_patterns/index.html) | [View Source](./Isometric_Patterns/index.html) |
+| 3D_Ecosystem_Simulation | 3D Simulation | [View Live](https://yashm20.github.io/projects/3D_Ecosystem_Simulation/index.html) | [View Source](./3D_Ecosystem_Simulation/index.html) |
+| Fractal_Explorer | Fractals | [View Live](https://yashm20.github.io/projects/Fractal_Explorer/index.html) | [View Source](./Fractal_Explorer/index.html) |
+| Audio-Driven-Particles | Audio Visualization | [View Live](https://yashm20.github.io/projects/Audio-Driven-Particles/index.html) | [View Source](./Audio-Driven-Particles/index.html) |
+| Symphony_3D | Audio Visualization | [View Live](https://yashm20.github.io/projects/Symphony_3D/index.html) | [View Source](./Symphony_3D/index.html) |
+| Ather_Weavers | Digital Art | [View Live](https://yashm20.github.io/projects/Ather_Weavers/index.html) | [View Source](./Ather_Weavers/index.html) |
 
 ## Featured Projects
 
