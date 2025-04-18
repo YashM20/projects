@@ -31,10 +31,14 @@
 
     .canvas-container {
       /* Responsive canvas container */
-      width: 90vw; /* Default width for smaller screens */
-      height: 90vw; /* Default height for smaller screens */
-      max-width: 500px; /* Maximum width */
-      max-height: 500px; /* Maximum height */
+      width: 90vw;
+      /* Default width for smaller screens */
+      height: 90vw;
+      /* Default height for smaller screens */
+      max-width: 500px;
+      /* Maximum width */
+      max-height: 500px;
+      /* Maximum height */
       margin-left: auto;
       margin-right: auto;
       /* Center the canvas */
@@ -46,18 +50,21 @@
       /* Rounded corners */
       overflow: hidden;
       /* Clip content to rounded corners */
-      @apply md:w-[500px] md:h-[500px]; /* Fixed size for medium screens and up */
+      @apply md:w-[500px] md:h-[500px];
+      /* Fixed size for medium screens and up */
     }
 
     canvas {
       display: block;
       /* Remove extra space below canvas */
-      width: 100%; /* Make canvas fill container */
+      width: 100%;
+      /* Make canvas fill container */
       height: 100%;
     }
 
     .btn {
-      @apply px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-150 ease-in-out text-sm md:text-base; /* Adjust text size */
+      @apply px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-150 ease-in-out text-sm md:text-base;
+      /* Adjust text size */
     }
 
     .tab-button {
@@ -81,12 +88,14 @@
     }
 
     .accordion-content {
-      @apply p-2 hidden; /* Hide content by default */
-    }
-    .accordion-content.open {
-        @apply block; /* Show when open */
+      @apply p-2 hidden;
+      /* Hide content by default */
     }
 
+    .accordion-content.open {
+      @apply block;
+      /* Show when open */
+    }
   </style>
 </head>
 
@@ -99,17 +108,18 @@
 
     <!-- Layout Selection -->
     <div class="mb-4">
-        <label class="control-label">Layout Style</label>
-        <div class="flex gap-2">
-            <label class="flex items-center gap-1 text-sm">
-                <input type="radio" name="layoutStyle" value="side" checked class="layout-radio form-radio h-3 w-3 text-blue-600">
-                Side Panel
-            </label>
-            <label class="flex items-center gap-1 text-sm">
-                <input type="radio" name="layoutStyle" value="top" class="layout-radio form-radio h-3 w-3 text-blue-600">
-                Top Bar
-            </label>
-        </div>
+      <label class="control-label">Layout Style</label>
+      <div class="flex gap-2">
+        <label class="flex items-center gap-1 text-sm">
+          <input type="radio" name="layoutStyle" value="side" checked
+            class="layout-radio form-radio h-3 w-3 text-blue-600">
+          Side Panel
+        </label>
+        <label class="flex items-center gap-1 text-sm">
+          <input type="radio" name="layoutStyle" value="top" class="layout-radio form-radio h-3 w-3 text-blue-600">
+          Top Bar
+        </label>
+      </div>
     </div>
 
     <!-- Shape Selection -->
@@ -129,9 +139,12 @@
     <div class="mb-4">
       <label class="control-label">Pattern Presets</label>
       <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-3 gap-2 mt-2">
-        <div class="pattern-preset bg-gradient-to-br from-blue-500 to-purple-500 aspect-square" data-preset="gradient1"></div>
-        <div class="pattern-preset bg-gradient-to-br from-green-500 to-yellow-500 aspect-square" data-preset="gradient2"></div>
-        <div class="pattern-preset bg-gradient-to-br from-red-500 to-pink-500 aspect-square" data-preset="gradient3"></div>
+        <div class="pattern-preset bg-gradient-to-br from-blue-500 to-purple-500 aspect-square" data-preset="gradient1">
+        </div>
+        <div class="pattern-preset bg-gradient-to-br from-green-500 to-yellow-500 aspect-square"
+          data-preset="gradient2"></div>
+        <div class="pattern-preset bg-gradient-to-br from-red-500 to-pink-500 aspect-square" data-preset="gradient3">
+        </div>
       </div>
     </div>
 
@@ -144,16 +157,16 @@
       <div class="accordion-content p-2 border border-t-0 rounded-b-lg">
         <div class="mb-3">
           <label for="elementSize" class="control-label text-xs">Tile Size</label>
-      <div class="flex items-center">
-        <input type="range" id="elementSize" min="10" max="100" value="50" class="control-input">
+          <div class="flex items-center">
+            <input type="range" id="elementSize" min="10" max="100" value="50" class="control-input">
             <span id="elementSizeValue" class="control-value text-xs">50</span>
-      </div>
-    </div>
+          </div>
+        </div>
 
         <div class="mb-3">
           <label for="spacing" class="control-label text-xs">Spacing</label>
-      <div class="flex items-center">
-        <input type="range" id="spacing" min="0" max="50" value="5" class="control-input">
+          <div class="flex items-center">
+            <input type="range" id="spacing" min="0" max="50" value="5" class="control-input">
             <span id="spacingValue" class="control-value text-xs">5</span>
           </div>
         </div>
@@ -169,21 +182,23 @@
       <div class="accordion-content p-2 border border-t-0 rounded-b-lg">
         <div class="mb-3">
           <label for="baseColor" class="control-label text-xs">Base Color</label>
-          <input type="color" id="baseColor" value="#a8a29e" class="w-full h-8 p-1 border border-gray-300 rounded-lg cursor-pointer">
-    </div>
+          <input type="color" id="baseColor" value="#a8a29e"
+            class="w-full h-8 p-1 border border-gray-300 rounded-lg cursor-pointer">
+        </div>
 
         <div class="mb-3">
           <label for="accentColor" class="control-label text-xs">Accent Color</label>
-          <input type="color" id="accentColor" value="#4f46e5" class="w-full h-8 p-1 border border-gray-300 rounded-lg cursor-pointer">
+          <input type="color" id="accentColor" value="#4f46e5"
+            class="w-full h-8 p-1 border border-gray-300 rounded-lg cursor-pointer">
         </div>
 
         <div class="mb-3">
           <label for="colorVariation" class="control-label text-xs">Color Variation (%)</label>
-      <div class="flex items-center">
-        <input type="range" id="colorVariation" min="0" max="100" value="15" class="control-input">
+          <div class="flex items-center">
+            <input type="range" id="colorVariation" min="0" max="100" value="15" class="control-input">
             <span id="colorVariationValue" class="control-value text-xs">15</span>
-      </div>
-    </div>
+          </div>
+        </div>
 
         <div class="mb-3">
           <label for="gradientEnabled" class="control-label text-xs flex items-center gap-2">
@@ -210,11 +225,11 @@
 
         <div class="mb-3">
           <label for="sideHeight" class="control-label text-xs">Side Height (%)</label>
-      <div class="flex items-center">
+          <div class="flex items-center">
             <input type="range" id="sideHeight" min="10" max="100" value="40" class="control-input">
             <span id="sideHeightValue" class="control-value text-xs">40</span>
-      </div>
-    </div>
+          </div>
+        </div>
 
         <div class="mb-3">
           <label for="shadowIntensity" class="control-label text-xs">Shadow Intensity (%)</label>
@@ -257,8 +272,8 @@
             <span id="animationSpeedValue" class="control-value text-xs">5</span>
           </div>
         </div>
+      </div>
     </div>
-  </div>
 
     <!-- Pattern Layout -->
     <div class="accordion-section mb-2">
@@ -292,26 +307,36 @@
       </div>
     </div>
 
-    <div class="flex flex-row mx-auto min-w-full justify-center fixed bottom-0 left-0 right-0 gap-2 mt-4 pb-2 bg-white shadow-lg border-t border-gray-200 p-2">
-      <button id="randomizeButton" class="btn flex-1 max-w-[200px] bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105">Randomize</button>
-      <button id="exportButton" class="btn flex-1 max-w-[200px] bg-green-600 hover:bg-green-700 transition-all duration-300 transform hover:scale-105">Export</button>
+    <div
+      class="flex flex-row mx-auto min-w-full justify-center fixed bottom-0 left-0 right-0 gap-2 mt-4 pb-2 bg-white shadow-lg border-t border-gray-200 p-2">
+      <button id="randomizeButton"
+        class="btn flex-1 max-w-[200px] bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105">Randomize</button>
+      <button id="exportButton"
+        class="btn flex-1 max-w-[200px] bg-green-600 hover:bg-green-700 transition-all duration-300 transform hover:scale-105">Export</button>
     </div>
   </div>
 
   <!-- Canvas Area -->
   <div class="flex-grow flex flex-col items-center justify-center gap-2 md:gap-4 p-2 md:p-0" id="canvasArea">
-    <div class="canvas-container relative shadow-xl rounded-xl border-2 border-gray-200 transition-all duration-300 hover:shadow-2xl hover:border-blue-200">
+    <div
+      class="canvas-container relative shadow-xl rounded-xl border-2 border-gray-200 transition-all duration-300 hover:shadow-2xl hover:border-blue-200">
       <canvas id="patternCanvas"></canvas>
-      <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1/4 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-70"></div>
+      <div
+        class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-1/4 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-70">
+      </div>
     </div>
     <div class="flex gap-3 mt-4">
-      <button id="undoButton" class="btn bg-gray-600 hover:bg-gray-700 flex items-center gap-1 px-5 rounded-full shadow-md transition-all duration-200 transform hover:-translate-y-1" disabled>
+      <button id="undoButton"
+        class="btn bg-gray-600 hover:bg-gray-700 flex items-center gap-1 px-5 rounded-full shadow-md transition-all duration-200 transform hover:-translate-y-1"
+        disabled>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
         Undo
       </button>
-      <button id="redoButton" class="btn bg-gray-600 hover:bg-gray-700 flex items-center gap-1 px-5 rounded-full shadow-md transition-all duration-200 transform hover:-translate-y-1" disabled>
+      <button id="redoButton"
+        class="btn bg-gray-600 hover:bg-gray-700 flex items-center gap-1 px-5 rounded-full shadow-md transition-all duration-200 transform hover:-translate-y-1"
+        disabled>
         Redo
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -320,12 +345,20 @@
     </div>
   </div>
 
+  <!-- Visitor Counter -->
+  <div class="text-center fixed bottom-0 right-0 ">
+    <a href='http://www.freevisitorcounters.com'>on Freevisitorcounters.com</a>
+    <script type='text/javascript'
+      src='https://www.freevisitorcounters.com/auth.php?id=3b5e6dded99e907a3acccd0565da036807c92d53'></script>
+    <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/1328939/t/5"></script>
+  </div>
+
   <script>
     // --- Global Variables ---
     let fabricCanvas;
     const canvasElement = document.getElementById('patternCanvas');
     const canvasContainer = document.querySelector('.canvas-container');
-    
+
     // History for undo/redo
     let history = [];
     let historyIndex = -1;
@@ -368,7 +401,7 @@
 
     // Pattern presets
     const patternPresets = document.querySelectorAll('.pattern-preset');
-    
+
     const mainBody = document.getElementById('mainBody');
     const controlPanel = document.getElementById('controlPanel');
     const canvasArea = document.getElementById('canvasArea');
@@ -394,12 +427,12 @@
 
       // Resize canvas when window resizes (debounced)
       const debouncedResize = debounce(() => {
-          const newWidth = canvasContainer.offsetWidth;
-          const newHeight = canvasContainer.offsetHeight;
-          fabricCanvas.setWidth(newWidth);
-          fabricCanvas.setHeight(newHeight);
-          fabricCanvas.calcOffset(); // Recalculate canvas offset
-          generatePattern(); // Regenerate pattern for new size
+        const newWidth = canvasContainer.offsetWidth;
+        const newHeight = canvasContainer.offsetHeight;
+        fabricCanvas.setWidth(newWidth);
+        fabricCanvas.setHeight(newHeight);
+        fabricCanvas.calcOffset(); // Recalculate canvas offset
+        generatePattern(); // Regenerate pattern for new size
       }, 250);
       window.addEventListener('resize', debouncedResize);
 
@@ -422,7 +455,7 @@
         elementSizeValue.textContent = elementSizeSlider.value;
         debouncedGenerate();
       });
-      
+
       spacingSlider.addEventListener('input', () => {
         spacingValue.textContent = spacingSlider.value;
         debouncedGenerate();
@@ -458,14 +491,14 @@
           stopAnimation();
         }
       });
-      
+
       animationTypeSelect.addEventListener('change', () => {
         if (animationEnabledCheckbox.checked) {
           stopAnimation();
           startAnimation();
         }
       });
-      
+
       animationSpeedSlider.addEventListener('input', () => {
         animationSpeedValue.textContent = animationSpeedSlider.value;
         if (animationEnabledCheckbox.checked) {
@@ -479,12 +512,12 @@
         patternDensityValue.textContent = patternDensitySlider.value;
         debouncedGenerate();
       });
-      
+
       rotationVariationSlider.addEventListener('input', () => {
         rotationVariationValue.textContent = rotationVariationSlider.value;
         debouncedGenerate();
       });
-      
+
       randomizeRotationCheckbox.addEventListener('change', debouncedGenerate);
 
       // Shape selection
@@ -512,7 +545,7 @@
       });
 
       exportButton.addEventListener('click', exportPattern);
-      
+
       undoButton.addEventListener('click', undo);
       redoButton.addEventListener('click', redo);
 
@@ -521,14 +554,14 @@
 
       // Layout Radio Buttons
       layoutRadios.forEach(radio => {
-          radio.addEventListener('change', (event) => {
-              if (event.target.checked) {
-                  setLayout(event.target.value);
-                  // Optional: Regenerate pattern after layout change if needed
-                   // This might be needed if canvas size calculation depends on layout
-                   // debounce(generatePattern, 50)();
-              }
-          });
+        radio.addEventListener('change', (event) => {
+          if (event.target.checked) {
+            setLayout(event.target.value);
+            // Optional: Regenerate pattern after layout change if needed
+            // This might be needed if canvas size calculation depends on layout
+            // debounce(generatePattern, 50)();
+          }
+        });
       });
 
       // Initialize shape-specific controls on load
@@ -537,78 +570,78 @@
 
     // --- Accordion Setup ---
     function setupAccordion() {
-        document.querySelectorAll('.accordion-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const content = header.nextElementSibling;
-                const arrow = header.querySelector('span:last-child');
-                const isOpen = content.classList.contains('open');
+      document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', () => {
+          const content = header.nextElementSibling;
+          const arrow = header.querySelector('span:last-child');
+          const isOpen = content.classList.contains('open');
 
-                if (isOpen) {
-                    content.classList.remove('open');
-                    arrow.style.transform = 'rotate(0deg)';
-                } else {
-                    content.classList.add('open');
-                    arrow.style.transform = 'rotate(180deg)';
-                }
-            });
+          if (isOpen) {
+            content.classList.remove('open');
+            arrow.style.transform = 'rotate(0deg)';
+          } else {
+            content.classList.add('open');
+            arrow.style.transform = 'rotate(180deg)';
+          }
         });
-        // Optionally open the first accordion by default
-        const firstAccordion = document.querySelector('.accordion-section .accordion-content');
-        if (firstAccordion) {
-           firstAccordion.classList.add('open');
-           firstAccordion.previousElementSibling.querySelector('span:last-child').style.transform = 'rotate(180deg)';
-        }
+      });
+      // Optionally open the first accordion by default
+      const firstAccordion = document.querySelector('.accordion-section .accordion-content');
+      if (firstAccordion) {
+        firstAccordion.classList.add('open');
+        firstAccordion.previousElementSibling.querySelector('span:last-child').style.transform = 'rotate(180deg)';
+      }
     }
 
     // --- Shape Change Handler ---
     function handleShapeChange(shapeType) {
-        const supportsSides = ['rhombus', 'cube', 'hexagon'].includes(shapeType);
-        const sideControlsContainer = addSidesCheckbox.closest('.accordion-content > div:has(#addSides)').parentNode;
+      const supportsSides = ['rhombus', 'cube', 'hexagon'].includes(shapeType);
+      const sideControlsContainer = addSidesCheckbox.closest('.accordion-content > div:has(#addSides)').parentNode;
 
-        addSidesCheckbox.disabled = !supportsSides;
-        sideHeightSlider.disabled = !supportsSides || !addSidesCheckbox.checked;
+      addSidesCheckbox.disabled = !supportsSides;
+      sideHeightSlider.disabled = !supportsSides || !addSidesCheckbox.checked;
 
-        // Visually indicate disabled state (optional, Tailwind can handle some)
-        const sideHeightLabel = document.querySelector('label[for="sideHeight"]');
-        if (!supportsSides) {
-            addSidesCheckbox.checked = false; // Uncheck if not supported
-            addSidesCheckbox.closest('label').classList.add('opacity-50', 'cursor-not-allowed');
-            sideHeightSlider.closest('div').classList.add('opacity-50');
-            sideHeightLabel.classList.add('opacity-50');
+      // Visually indicate disabled state (optional, Tailwind can handle some)
+      const sideHeightLabel = document.querySelector('label[for="sideHeight"]');
+      if (!supportsSides) {
+        addSidesCheckbox.checked = false; // Uncheck if not supported
+        addSidesCheckbox.closest('label').classList.add('opacity-50', 'cursor-not-allowed');
+        sideHeightSlider.closest('div').classList.add('opacity-50');
+        sideHeightLabel.classList.add('opacity-50');
 
-        } else {
-             addSidesCheckbox.closest('label').classList.remove('opacity-50', 'cursor-not-allowed');
-             sideHeightSlider.closest('div').classList.remove('opacity-50');
-             sideHeightLabel.classList.remove('opacity-50');
-        }
-        // Re-check side height slider disable state based on checkbox
-         sideHeightSlider.disabled = !supportsSides || !addSidesCheckbox.checked;
-         if(sideHeightSlider.disabled){
-            sideHeightSlider.closest('div').classList.add('opacity-50');
-             sideHeightLabel.classList.add('opacity-50');
-         } else {
-             sideHeightSlider.closest('div').classList.remove('opacity-50');
-             sideHeightLabel.classList.remove('opacity-50');
-         }
+      } else {
+        addSidesCheckbox.closest('label').classList.remove('opacity-50', 'cursor-not-allowed');
+        sideHeightSlider.closest('div').classList.remove('opacity-50');
+        sideHeightLabel.classList.remove('opacity-50');
+      }
+      // Re-check side height slider disable state based on checkbox
+      sideHeightSlider.disabled = !supportsSides || !addSidesCheckbox.checked;
+      if (sideHeightSlider.disabled) {
+        sideHeightSlider.closest('div').classList.add('opacity-50');
+        sideHeightLabel.classList.add('opacity-50');
+      } else {
+        sideHeightSlider.closest('div').classList.remove('opacity-50');
+        sideHeightLabel.classList.remove('opacity-50');
+      }
 
 
-        // Apply classic defaults for Rhombus
-        if (shapeType === 'rhombus') {
-            // Only set defaults if not already set or significantly different
-            // This prevents overwriting user adjustments unless switching TO rhombus
-            if(elementSizeSlider.value < 20 || elementSizeSlider.value > 80) elementSizeSlider.value = 50;
-            if(spacingSlider.value > 20) spacingSlider.value = 5;
-            if(baseColorPicker.value === '#000000' || baseColorPicker.value === '#ffffff') baseColorPicker.value = '#a8a29e'; // example default
-            if(colorVariationSlider.value > 50) colorVariationSlider.value = 15;
-            if(!addSidesCheckbox.disabled) addSidesCheckbox.checked = true;
-            if(!sideHeightSlider.disabled) sideHeightSlider.value = 40;
+      // Apply classic defaults for Rhombus
+      if (shapeType === 'rhombus') {
+        // Only set defaults if not already set or significantly different
+        // This prevents overwriting user adjustments unless switching TO rhombus
+        if (elementSizeSlider.value < 20 || elementSizeSlider.value > 80) elementSizeSlider.value = 50;
+        if (spacingSlider.value > 20) spacingSlider.value = 5;
+        if (baseColorPicker.value === '#000000' || baseColorPicker.value === '#ffffff') baseColorPicker.value = '#a8a29e'; // example default
+        if (colorVariationSlider.value > 50) colorVariationSlider.value = 15;
+        if (!addSidesCheckbox.disabled) addSidesCheckbox.checked = true;
+        if (!sideHeightSlider.disabled) sideHeightSlider.value = 40;
 
-            // Update display values
-            elementSizeValue.textContent = elementSizeSlider.value;
-            spacingValue.textContent = spacingSlider.value;
-            colorVariationValue.textContent = colorVariationSlider.value;
-            sideHeightValue.textContent = sideHeightSlider.value;
-        }
+        // Update display values
+        elementSizeValue.textContent = elementSizeSlider.value;
+        spacingValue.textContent = spacingSlider.value;
+        colorVariationValue.textContent = colorVariationSlider.value;
+        sideHeightValue.textContent = sideHeightSlider.value;
+      }
     }
 
     // --- Pattern Generation ---
@@ -656,8 +689,8 @@
           generateRhombusPattern(size, effectiveSpacing, baseColorHex, accentColorHex, colorVariation, rotationVariation, addSides, sideHeight, shadowIntensity, useGradient, randomizeRotation);
           break;
         case 'cube':
-           // Cube generation inherently creates sides, 'addSides' can be interpreted as enabling the multi-face look
-           generateCubePattern(size, effectiveSpacing, baseColorHex, accentColorHex, colorVariation, rotationVariation, shadowIntensity, useGradient, randomizeRotation);
+          // Cube generation inherently creates sides, 'addSides' can be interpreted as enabling the multi-face look
+          generateCubePattern(size, effectiveSpacing, baseColorHex, accentColorHex, colorVariation, rotationVariation, shadowIntensity, useGradient, randomizeRotation);
           break;
         case 'pyramid':
           generatePyramidPattern(size, effectiveSpacing, baseColorHex, accentColorHex, colorVariation, rotationVariation, shadowIntensity, useGradient, randomizeRotation);
@@ -677,7 +710,7 @@
 
       // Restart animation if it was enabled
       if (animationEnabledCheckbox.checked) {
-          startAnimation();
+        startAnimation();
       }
     }
 
@@ -796,9 +829,9 @@
             getRandomColorVariation(baseColor, colorVariation);
 
           const colors = {
-              top: baseTileColor,
-              left: varyColorComponent(baseTileColor, -0.15, true),
-              right: varyColorComponent(baseTileColor, -0.30, true)
+            top: baseTileColor,
+            left: varyColorComponent(baseTileColor, -0.15, true),
+            right: varyColorComponent(baseTileColor, -0.30, true)
           };
 
           // Cube intrinsically has sides, no need for addSides check here
@@ -835,8 +868,8 @@
             getRandomColorVariation(baseColor, colorVariation);
 
           const colors = {
-              left: baseTileColor,
-              right: varyColorComponent(baseTileColor, -0.25, true)
+            left: baseTileColor,
+            right: varyColorComponent(baseTileColor, -0.25, true)
           };
 
           const pyramid = createPyramid(cx, cy, size, colors); // Removed shadowIntensity
@@ -854,41 +887,41 @@
     }
 
     function generateCylinderPattern(size, spacing, baseColor, accentColor, colorVariation, rotationVariation, shadowIntensity, useGradient, randomizeRotation) {
-        const cylinderRadius = size / Math.sqrt(3); // Adjust radius for visual size
-        const cylinderHeight = size * 1.2; // Visual height
-        const stepX = cylinderRadius * Math.sqrt(3) * 2 + spacing;
-        const stepY = cylinderHeight * 0.75 + spacing;
+      const cylinderRadius = size / Math.sqrt(3); // Adjust radius for visual size
+      const cylinderHeight = size * 1.2; // Visual height
+      const stepX = cylinderRadius * Math.sqrt(3) * 2 + spacing;
+      const stepY = cylinderHeight * 0.75 + spacing;
 
 
-        for (let r = -1; r * stepY < fabricCanvas.height + cylinderHeight; r++) {
-            for (let c = -1; ; c++) {
-            const cx = (c * stepX) + ((r % 2) * stepX / 2);
-            const cy = r * stepY;
+      for (let r = -1; r * stepY < fabricCanvas.height + cylinderHeight; r++) {
+        for (let c = -1; ; c++) {
+          const cx = (c * stepX) + ((r % 2) * stepX / 2);
+          const cy = r * stepY;
 
-            if (cx - cylinderRadius * Math.sqrt(3) > fabricCanvas.width) break;
+          if (cx - cylinderRadius * Math.sqrt(3) > fabricCanvas.width) break;
 
-            const rotation = randomizeRotation ? (Math.random() - 0.5) * 2 * rotationVariation : 0;
-            const baseTileColor = useGradient ?
-                createGradient(baseColor, accentColor, colorVariation) :
-                getRandomColorVariation(baseColor, colorVariation);
+          const rotation = randomizeRotation ? (Math.random() - 0.5) * 2 * rotationVariation : 0;
+          const baseTileColor = useGradient ?
+            createGradient(baseColor, accentColor, colorVariation) :
+            getRandomColorVariation(baseColor, colorVariation);
 
-            const colors = {
-                top: baseTileColor,
-                side: varyColorComponent(baseTileColor, -0.2, true)
-            };
+          const colors = {
+            top: baseTileColor,
+            side: varyColorComponent(baseTileColor, -0.2, true)
+          };
 
-            const cylinder = createCylinder(cx, cy, cylinderRadius, cylinderHeight, colors); // Removed shadowIntensity
-            cylinder.set({
-                angle: rotation,
-                selectable: false,
-                hoverCursor: 'default',
-                originX: 'center',
-                originY: 'center'
-            });
+          const cylinder = createCylinder(cx, cy, cylinderRadius, cylinderHeight, colors); // Removed shadowIntensity
+          cylinder.set({
+            angle: rotation,
+            selectable: false,
+            hoverCursor: 'default',
+            originX: 'center',
+            originY: 'center'
+          });
 
-            fabricCanvas.add(cylinder);
-            }
+          fabricCanvas.add(cylinder);
         }
+      }
     }
 
     function generateHexagonPattern(size, spacing, baseColor, accentColor, colorVariation, rotationVariation, addSides, sideHeight, shadowIntensity, useGradient, randomizeRotation) {
@@ -944,13 +977,13 @@
 
           const rotation = randomizeRotation ? (Math.random() - 0.5) * 2 * rotationVariation : 0;
           const baseTileColor = useGradient ?
-             createGradient(baseColor, accentColor, colorVariation) :
-             getRandomColorVariation(baseColor, colorVariation);
+            createGradient(baseColor, accentColor, colorVariation) :
+            getRandomColorVariation(baseColor, colorVariation);
 
           const colors = {
-              top: baseTileColor,
-              front: varyColorComponent(baseTileColor, -0.2, true),
-              side: varyColorComponent(baseTileColor, -0.4, true)
+            top: baseTileColor,
+            front: varyColorComponent(baseTileColor, -0.2, true),
+            side: varyColorComponent(baseTileColor, -0.4, true)
           };
 
           const stairs = createStairs(cx, cy, stepWidth, stepHeight, numSteps, colors); // Removed shadowIntensity
@@ -969,251 +1002,251 @@
 
     // --- Shape Creation Helper Functions ---
     function createCube(x, y, size, colors) {
-        const isoAngle = Math.PI / 6; // 30 degrees
-        const halfWidth = size * Math.sqrt(3) / 2;
-        const halfHeight = size / 2;
+      const isoAngle = Math.PI / 6; // 30 degrees
+      const halfWidth = size * Math.sqrt(3) / 2;
+      const halfHeight = size / 2;
 
-        const faces = [];
+      const faces = [];
 
-        // Top face
-        const topPoints = [
-            { x: 0, y: -size },
-            { x: halfWidth, y: -size + halfHeight },
-            { x: 0, y: -size + 2 * halfHeight },
-            { x: -halfWidth, y: -size + halfHeight },
-        ];
-        faces.push(new fabric.Polygon(topPoints, { fill: colors.top }));
+      // Top face
+      const topPoints = [
+        { x: 0, y: -size },
+        { x: halfWidth, y: -size + halfHeight },
+        { x: 0, y: -size + 2 * halfHeight },
+        { x: -halfWidth, y: -size + halfHeight },
+      ];
+      faces.push(new fabric.Polygon(topPoints, { fill: colors.top }));
 
-        // Left face
-        const leftPoints = [
-            { x: -halfWidth, y: -size + halfHeight },
-            { x: 0, y: -size + 2 * halfHeight },
-            { x: 0, y: 0 }, // Bottom point
-            { x: -halfWidth, y: -halfHeight }
-        ];
-        faces.push(new fabric.Polygon(leftPoints, { fill: colors.left }));
+      // Left face
+      const leftPoints = [
+        { x: -halfWidth, y: -size + halfHeight },
+        { x: 0, y: -size + 2 * halfHeight },
+        { x: 0, y: 0 }, // Bottom point
+        { x: -halfWidth, y: -halfHeight }
+      ];
+      faces.push(new fabric.Polygon(leftPoints, { fill: colors.left }));
 
-        // Right face
-        const rightPoints = [
-            { x: halfWidth, y: -size + halfHeight },
-            { x: 0, y: -size + 2 * halfHeight },
-            { x: 0, y: 0 }, // Bottom point
-            { x: halfWidth, y: -halfHeight }
-        ];
-        faces.push(new fabric.Polygon(rightPoints, { fill: colors.right }));
+      // Right face
+      const rightPoints = [
+        { x: halfWidth, y: -size + halfHeight },
+        { x: 0, y: -size + 2 * halfHeight },
+        { x: 0, y: 0 }, // Bottom point
+        { x: halfWidth, y: -halfHeight }
+      ];
+      faces.push(new fabric.Polygon(rightPoints, { fill: colors.right }));
 
-        return new fabric.Group(faces, {
-            left: x,
-            top: y + size/2, // Adjust position to center visually
-            originX: 'center',
-            originY: 'center',
-            selectable: false,
-            hoverCursor: 'default'
-        });
+      return new fabric.Group(faces, {
+        left: x,
+        top: y + size / 2, // Adjust position to center visually
+        originX: 'center',
+        originY: 'center',
+        selectable: false,
+        hoverCursor: 'default'
+      });
     }
 
     function createPyramid(x, y, size, colors) {
-        const halfWidth = size * Math.sqrt(3) / 2;
-        const height = size * 1.2; // Visual height adjustment
+      const halfWidth = size * Math.sqrt(3) / 2;
+      const height = size * 1.2; // Visual height adjustment
 
-        const faces = [];
+      const faces = [];
 
-        // Left face
-        const leftPoints = [
-            { x: 0, y: -height },           // Apex
-            { x: -halfWidth, y: 0 },       // Bottom-left
-            { x: 0, y: height * 0.2 }      // Bottom-center (iso)
-        ];
-        faces.push(new fabric.Polygon(leftPoints, { fill: colors.left }));
+      // Left face
+      const leftPoints = [
+        { x: 0, y: -height },           // Apex
+        { x: -halfWidth, y: 0 },       // Bottom-left
+        { x: 0, y: height * 0.2 }      // Bottom-center (iso)
+      ];
+      faces.push(new fabric.Polygon(leftPoints, { fill: colors.left }));
 
-        // Right face
-        const rightPoints = [
-            { x: 0, y: -height },          // Apex
-            { x: halfWidth, y: 0 },        // Bottom-right
-            { x: 0, y: height * 0.2 }     // Bottom-center (iso)
-        ];
-        faces.push(new fabric.Polygon(rightPoints, { fill: colors.right }));
+      // Right face
+      const rightPoints = [
+        { x: 0, y: -height },          // Apex
+        { x: halfWidth, y: 0 },        // Bottom-right
+        { x: 0, y: height * 0.2 }     // Bottom-center (iso)
+      ];
+      faces.push(new fabric.Polygon(rightPoints, { fill: colors.right }));
 
-        return new fabric.Group(faces, {
-            left: x,
-            top: y + height / 2, // Adjust position
-            originX: 'center',
-            originY: 'center',
-            selectable: false,
-            hoverCursor: 'default'
-        });
+      return new fabric.Group(faces, {
+        left: x,
+        top: y + height / 2, // Adjust position
+        originX: 'center',
+        originY: 'center',
+        selectable: false,
+        hoverCursor: 'default'
+      });
     }
 
     function createCylinder(x, y, radius, height, colors) {
-        const ellipseHeight = radius * 0.5; // Height of the ellipse caps
+      const ellipseHeight = radius * 0.5; // Height of the ellipse caps
 
-        // Top Ellipse
-        const ellipseTop = new fabric.Ellipse({
-            left: 0,
-            top: -height / 2,
-            rx: radius,
-            ry: ellipseHeight,
-            fill: colors.top,
-            originX: 'center',
-            originY: 'center'
-        });
+      // Top Ellipse
+      const ellipseTop = new fabric.Ellipse({
+        left: 0,
+        top: -height / 2,
+        rx: radius,
+        ry: ellipseHeight,
+        fill: colors.top,
+        originX: 'center',
+        originY: 'center'
+      });
 
-        // Bottom Ellipse (slightly darker)
-        const ellipseBottom = new fabric.Ellipse({
-            left: 0,
-            top: height / 2,
-            rx: radius,
-            ry: ellipseHeight,
-            fill: varyColorComponent(colors.top, -0.1, true),
-            originX: 'center',
-            originY: 'center'
-        });
+      // Bottom Ellipse (slightly darker)
+      const ellipseBottom = new fabric.Ellipse({
+        left: 0,
+        top: height / 2,
+        rx: radius,
+        ry: ellipseHeight,
+        fill: varyColorComponent(colors.top, -0.1, true),
+        originX: 'center',
+        originY: 'center'
+      });
 
-        // Calculate points for the side rectangle (approximated with trapezoids)
-        const sideWidth = radius * 2;
-        const sidePoints = [
-            { x: -radius, y: -height / 2 + ellipseHeight / 2 },
-            { x: radius, y: -height / 2 + ellipseHeight / 2 },
-            { x: radius, y: height / 2 - ellipseHeight / 2 },
-            { x: -radius, y: height / 2 - ellipseHeight / 2 }
-        ];
+      // Calculate points for the side rectangle (approximated with trapezoids)
+      const sideWidth = radius * 2;
+      const sidePoints = [
+        { x: -radius, y: -height / 2 + ellipseHeight / 2 },
+        { x: radius, y: -height / 2 + ellipseHeight / 2 },
+        { x: radius, y: height / 2 - ellipseHeight / 2 },
+        { x: -radius, y: height / 2 - ellipseHeight / 2 }
+      ];
 
-        // Side rectangle
-        const rect = new fabric.Polygon(sidePoints, {
-            fill: colors.side,
-            originX: 'center',
-            originY: 'center',
-            top: 0, // Positioned relative to group center
-            left: 0
-        });
+      // Side rectangle
+      const rect = new fabric.Polygon(sidePoints, {
+        fill: colors.side,
+        originX: 'center',
+        originY: 'center',
+        top: 0, // Positioned relative to group center
+        left: 0
+      });
 
-        // Order matters for appearance: bottom, side, top
-        const parts = [ellipseBottom, rect, ellipseTop];
+      // Order matters for appearance: bottom, side, top
+      const parts = [ellipseBottom, rect, ellipseTop];
 
-        return new fabric.Group(parts, {
-            left: x,
-            top: y,
-            originX: 'center',
-            originY: 'center',
-            selectable: false,
-            hoverCursor: 'default'
-        });
+      return new fabric.Group(parts, {
+        left: x,
+        top: y,
+        originX: 'center',
+        originY: 'center',
+        selectable: false,
+        hoverCursor: 'default'
+      });
     }
 
     function createHexagon(x, y, radius, color, addSides, sideHeight) {
-        const points = [];
-        for (let i = 0; i < 6; i++) {
-            // Angle adjusted for flat top hexagon in isometric view (approx)
-            const angle = Math.PI / 3 * i - Math.PI / 6;
-            points.push({
-            x: radius * Math.cos(angle),
-            y: radius * Math.sin(angle) * 0.6 // Squash vertically for isometric view
-            });
-        }
-
-        const parts = [];
-
-        // Top face
-        const topFace = new fabric.Polygon(points, {
-            fill: color,
-            originX: 'center',
-            originY: 'center'
-            // Position set by group
+      const points = [];
+      for (let i = 0; i < 6; i++) {
+        // Angle adjusted for flat top hexagon in isometric view (approx)
+        const angle = Math.PI / 3 * i - Math.PI / 6;
+        points.push({
+          x: radius * Math.cos(angle),
+          y: radius * Math.sin(angle) * 0.6 // Squash vertically for isometric view
         });
+      }
 
-        parts.push(topFace);
+      const parts = [];
 
-        // Add sides if enabled
-        if (addSides) {
-            const actualSideHeight = radius * (sideHeight / 100) * 1.2; // Adjust height visually
-            const darkerColor1 = varyColorComponent(color, -0.15, true);
-            const darkerColor2 = varyColorComponent(color, -0.30, true);
-            const darkerColor3 = varyColorComponent(color, -0.25, true);
+      // Top face
+      const topFace = new fabric.Polygon(points, {
+        fill: color,
+        originX: 'center',
+        originY: 'center'
+        // Position set by group
+      });
 
-            // Define faces based on isometric view
-            // Bottom-Left Face
-            const blPoints = [
-                points[4], points[5],
-                { x: points[5].x, y: points[5].y + actualSideHeight },
-                { x: points[4].x, y: points[4].y + actualSideHeight }
-            ];
-            parts.push(new fabric.Polygon(blPoints, { fill: darkerColor1, originX: 'center', originY: 'center' }));
+      parts.push(topFace);
 
-            // Bottom-Right Face
-            const brPoints = [
-                points[0], points[1],
-                { x: points[1].x, y: points[1].y + actualSideHeight },
-                { x: points[0].x, y: points[0].y + actualSideHeight }
-            ];
-            parts.push(new fabric.Polygon(brPoints, { fill: darkerColor2, originX: 'center', originY: 'center' }));
+      // Add sides if enabled
+      if (addSides) {
+        const actualSideHeight = radius * (sideHeight / 100) * 1.2; // Adjust height visually
+        const darkerColor1 = varyColorComponent(color, -0.15, true);
+        const darkerColor2 = varyColorComponent(color, -0.30, true);
+        const darkerColor3 = varyColorComponent(color, -0.25, true);
 
-            // Bottom Face (optional, can use darkerColor3)
-            const bottomPoints = [
-                points[5], points[0],
-                { x: points[0].x, y: points[0].y + actualSideHeight },
-                { x: points[5].x, y: points[5].y + actualSideHeight }
-            ];
-             parts.push(new fabric.Polygon(bottomPoints, { fill: darkerColor3, originX: 'center', originY: 'center' }));
+        // Define faces based on isometric view
+        // Bottom-Left Face
+        const blPoints = [
+          points[4], points[5],
+          { x: points[5].x, y: points[5].y + actualSideHeight },
+          { x: points[4].x, y: points[4].y + actualSideHeight }
+        ];
+        parts.push(new fabric.Polygon(blPoints, { fill: darkerColor1, originX: 'center', originY: 'center' }));
 
-        }
+        // Bottom-Right Face
+        const brPoints = [
+          points[0], points[1],
+          { x: points[1].x, y: points[1].y + actualSideHeight },
+          { x: points[0].x, y: points[0].y + actualSideHeight }
+        ];
+        parts.push(new fabric.Polygon(brPoints, { fill: darkerColor2, originX: 'center', originY: 'center' }));
 
-        return new fabric.Group(parts, {
-            left: x,
-            top: y,
-            originX: 'center',
-            originY: 'center',
-            selectable: false,
-            hoverCursor: 'default'
-        });
+        // Bottom Face (optional, can use darkerColor3)
+        const bottomPoints = [
+          points[5], points[0],
+          { x: points[0].x, y: points[0].y + actualSideHeight },
+          { x: points[5].x, y: points[5].y + actualSideHeight }
+        ];
+        parts.push(new fabric.Polygon(bottomPoints, { fill: darkerColor3, originX: 'center', originY: 'center' }));
+
+      }
+
+      return new fabric.Group(parts, {
+        left: x,
+        top: y,
+        originX: 'center',
+        originY: 'center',
+        selectable: false,
+        hoverCursor: 'default'
+      });
     }
 
     function createStairs(x, y, stepWidth, stepHeight, numSteps, colors) {
-        const parts = [];
-        const isoAngle = Math.PI / 6; // 30 degrees for isometric view
-        const stepDepth = stepWidth / Math.sqrt(3); // Depth based on width
+      const parts = [];
+      const isoAngle = Math.PI / 6; // 30 degrees for isometric view
+      const stepDepth = stepWidth / Math.sqrt(3); // Depth based on width
 
-        for (let i = 0; i < numSteps; i++) {
-            const currentY = i * stepHeight; // Top edge of the current step
-            const currentXOffset = i * stepDepth / 2;
+      for (let i = 0; i < numSteps; i++) {
+        const currentY = i * stepHeight; // Top edge of the current step
+        const currentXOffset = i * stepDepth / 2;
 
-            // Top Face
-            const topPoints = [
-                { x: -stepWidth / 2 + currentXOffset, y: currentY },
-                { x: stepWidth / 2 + currentXOffset, y: currentY },
-                { x: stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * 0.5 },
-                { x: -stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * 0.5 },
-            ];
-            parts.push(new fabric.Polygon(topPoints, { fill: colors.top }));
+        // Top Face
+        const topPoints = [
+          { x: -stepWidth / 2 + currentXOffset, y: currentY },
+          { x: stepWidth / 2 + currentXOffset, y: currentY },
+          { x: stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * 0.5 },
+          { x: -stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * 0.5 },
+        ];
+        parts.push(new fabric.Polygon(topPoints, { fill: colors.top }));
 
-            // Front Face
-            const frontPoints = [
-                { x: -stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * 0.5 },
-                { x: stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * 0.5 },
-                { x: stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * 1.5 },
-                { x: -stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * 1.5 },
-            ];
-            parts.push(new fabric.Polygon(frontPoints, { fill: colors.front }));
+        // Front Face
+        const frontPoints = [
+          { x: -stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * 0.5 },
+          { x: stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * 0.5 },
+          { x: stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * 1.5 },
+          { x: -stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * 1.5 },
+        ];
+        parts.push(new fabric.Polygon(frontPoints, { fill: colors.front }));
 
-            // Side Face (only for the first step for simplicity, or complex logic needed)
-            if (i === 0) {
-                 const sidePoints = [
-                    { x: stepWidth / 2 + currentXOffset, y: currentY },
-                    { x: stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * 0.5 },
-                    { x: stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * (numSteps + 0.5) }, // Bottom of all stairs
-                    { x: stepWidth / 2 + currentXOffset, y: currentY + stepHeight * numSteps }, // Bottom-side corner
-                 ];
-                 parts.push(new fabric.Polygon(sidePoints, { fill: colors.side }));
-            }
+        // Side Face (only for the first step for simplicity, or complex logic needed)
+        if (i === 0) {
+          const sidePoints = [
+            { x: stepWidth / 2 + currentXOffset, y: currentY },
+            { x: stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * 0.5 },
+            { x: stepWidth / 2 + currentXOffset + stepDepth / 2, y: currentY + stepHeight * (numSteps + 0.5) }, // Bottom of all stairs
+            { x: stepWidth / 2 + currentXOffset, y: currentY + stepHeight * numSteps }, // Bottom-side corner
+          ];
+          parts.push(new fabric.Polygon(sidePoints, { fill: colors.side }));
         }
+      }
 
-        return new fabric.Group(parts.reverse(), { // Reverse to draw bottom layers first
-            left: x,
-            top: y - (stepHeight * numSteps * 0.75), // Adjust vertical centering
-            originX: 'center',
-            originY: 'center',
-            selectable: false,
-            hoverCursor: 'default'
-        });
+      return new fabric.Group(parts.reverse(), { // Reverse to draw bottom layers first
+        left: x,
+        top: y - (stepHeight * numSteps * 0.75), // Adjust vertical centering
+        originX: 'center',
+        originY: 'center',
+        selectable: false,
+        hoverCursor: 'default'
+      });
     }
 
     // --- Animation Functions ---
@@ -1228,7 +1261,7 @@
 
       function animate() {
         time += speed / 60;
-        
+
         fabricCanvas.getObjects().forEach((obj, index) => {
           switch (type) {
             case 'wave':
@@ -1248,7 +1281,7 @@
           obj.setCoords();
         });
 
-      fabricCanvas.requestRenderAll();
+        fabricCanvas.requestRenderAll();
         animationFrameId = requestAnimationFrame(animate);
       }
 
@@ -1266,22 +1299,22 @@
     // --- History Management ---
     function addToHistory() {
       const currentState = JSON.stringify(fabricCanvas.toJSON());
-      
+
       // If we're not at the end of the history, remove future states
       if (historyIndex < history.length - 1) {
         history = history.slice(0, historyIndex + 1);
       }
-      
+
       // Add new state
       history.push(currentState);
-      
+
       // Remove oldest state if we exceed max history
       if (history.length > MAX_HISTORY) {
         history.shift();
       }
-      
+
       historyIndex = history.length - 1;
-      
+
       // Update button states
       updateHistoryButtons();
     }
@@ -1360,7 +1393,7 @@
       sideHeightSlider.value = Math.floor(Math.random() * 90) + 10;
       shadowIntensitySlider.value = Math.floor(Math.random() * 100);
       patternDensitySlider.value = Math.floor(Math.random() * 9) + 1;
-      
+
       // Update display values
       elementSizeValue.textContent = elementSizeSlider.value;
       spacingValue.textContent = spacingSlider.value;
@@ -1369,15 +1402,15 @@
       sideHeightValue.textContent = sideHeightSlider.value;
       shadowIntensityValue.textContent = shadowIntensitySlider.value;
       patternDensityValue.textContent = patternDensitySlider.value;
-      
+
       // Random colors
-      baseColorPicker.value = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-      accentColorPicker.value = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-      
+      baseColorPicker.value = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+      accentColorPicker.value = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+
       // Random shape
       const shapes = ['rhombus', 'cube', 'pyramid', 'cylinder', 'hexagon', 'stairs'];
       shapeTypeSelect.value = shapes[Math.floor(Math.random() * shapes.length)];
-      
+
       // Random checkboxes
       addSidesCheckbox.checked = Math.random() > 0.5;
       gradientEnabledCheckbox.checked = Math.random() > 0.5;
@@ -1469,56 +1502,56 @@
 
     // --- Layout Management ---
     function setLayout(layoutType) {
-        currentLayout = layoutType;
-        mainBody.classList.remove('md:flex-row'); // Remove specific desktop layout class first
-        controlPanel.classList.remove('md:w-1/3', 'lg:w-1/4', 'max-h-[50vh]', 'md:max-h-none', 'md:h-auto', 'md:min-h-[calc(100vh-2rem)]', 'w-full');
-        canvasArea.classList.remove('w-full');
+      currentLayout = layoutType;
+      mainBody.classList.remove('md:flex-row'); // Remove specific desktop layout class first
+      controlPanel.classList.remove('md:w-1/3', 'lg:w-1/4', 'max-h-[50vh]', 'md:max-h-none', 'md:h-auto', 'md:min-h-[calc(100vh-2rem)]', 'w-full');
+      canvasArea.classList.remove('w-full');
 
-        if (layoutType === 'top') {
-            // Always flex-col for top bar layout
-            mainBody.classList.add('flex-col');
-            controlPanel.classList.add('w-full', 'max-h-[40vh]'); // Control panel full width, limited height
-            canvasArea.classList.add('w-full'); // Canvas area takes full width below
-        } else { // Side Panel Layout (default)
-            mainBody.classList.add('flex-col', 'md:flex-row'); // Stack on mobile, row on desktop
-            controlPanel.classList.add('w-full', 'max-h-[50vh]', 'md:w-1/3', 'lg:w-1/4', 'md:max-h-none', 'md:h-auto', 'md:min-h-[calc(100vh-2rem)]'); // Specific widths and heights for side panel
-            // canvasArea implicitly takes remaining space in flex-row
-        }
-        // Trigger canvas resize after layout change to adapt Fabric canvas size
-        resizeCanvas();
+      if (layoutType === 'top') {
+        // Always flex-col for top bar layout
+        mainBody.classList.add('flex-col');
+        controlPanel.classList.add('w-full', 'max-h-[40vh]'); // Control panel full width, limited height
+        canvasArea.classList.add('w-full'); // Canvas area takes full width below
+      } else { // Side Panel Layout (default)
+        mainBody.classList.add('flex-col', 'md:flex-row'); // Stack on mobile, row on desktop
+        controlPanel.classList.add('w-full', 'max-h-[50vh]', 'md:w-1/3', 'lg:w-1/4', 'md:max-h-none', 'md:h-auto', 'md:min-h-[calc(100vh-2rem)]'); // Specific widths and heights for side panel
+        // canvasArea implicitly takes remaining space in flex-row
+      }
+      // Trigger canvas resize after layout change to adapt Fabric canvas size
+      resizeCanvas();
     }
 
-     // --- Canvas Resizing ---
+    // --- Canvas Resizing ---
     function resizeCanvas() {
-        const container = canvasContainer; // Use the existing container element
-        const newWidth = container.offsetWidth;
-        const newHeight = container.offsetHeight;
+      const container = canvasContainer; // Use the existing container element
+      const newWidth = container.offsetWidth;
+      const newHeight = container.offsetHeight;
 
-        // Adjust container style for 'top' layout to allow it to shrink if needed
-        if (currentLayout === 'top') {
-            container.style.width = '90vw'; // Example, adjust as needed
-            container.style.height = 'auto'; // Let aspect ratio control height
-            container.style.aspectRatio = '1 / 1'; // Keep it square
-            container.style.maxWidth = '500px'; // Max size
-            container.style.maxHeight = '500px';
-        } else {
-             // Reset styles for side layout if they were changed
-            container.style.width = ''; // Use CSS classes
-            container.style.height = '';
-            container.style.aspectRatio = '';
-            container.style.maxWidth = '';
-             container.style.maxHeight = '';
-        }
+      // Adjust container style for 'top' layout to allow it to shrink if needed
+      if (currentLayout === 'top') {
+        container.style.width = '90vw'; // Example, adjust as needed
+        container.style.height = 'auto'; // Let aspect ratio control height
+        container.style.aspectRatio = '1 / 1'; // Keep it square
+        container.style.maxWidth = '500px'; // Max size
+        container.style.maxHeight = '500px';
+      } else {
+        // Reset styles for side layout if they were changed
+        container.style.width = ''; // Use CSS classes
+        container.style.height = '';
+        container.style.aspectRatio = '';
+        container.style.maxWidth = '';
+        container.style.maxHeight = '';
+      }
 
-        // Update Fabric canvas dimensions
-        if (fabricCanvas) {
-             // Use the *actual* computed dimensions after potential style changes
-            const computedWidth = container.offsetWidth;
-            const computedHeight = container.offsetHeight;
-            fabricCanvas.setWidth(computedWidth);
-            fabricCanvas.setHeight(computedHeight);
-            fabricCanvas.calcOffset();
-        }
+      // Update Fabric canvas dimensions
+      if (fabricCanvas) {
+        // Use the *actual* computed dimensions after potential style changes
+        const computedWidth = container.offsetWidth;
+        const computedHeight = container.offsetHeight;
+        fabricCanvas.setWidth(computedWidth);
+        fabricCanvas.setHeight(computedHeight);
+        fabricCanvas.calcOffset();
+      }
     }
 
     // --- Start the application ---
