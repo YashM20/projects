@@ -4,82 +4,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Æther Weaver</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Physics Playground</title>
   <style>
     body {
       margin: 0;
       overflow: hidden;
       background-color: #000;
     }
-
-    canvas {
-      display: block;
-    }
-
-    #ui-container {
+    #ui {
       position: absolute;
       top: 10px;
       left: 10px;
-      z-index: 10;
       color: white;
-      background-color: rgba(0, 0, 0, 0.5);
+      font-family: Arial, sans-serif;
+      background: rgba(0,0,0,0.7);
       padding: 10px;
       border-radius: 5px;
-      font-family: sans-serif;
     }
-
-    #ui-container button {
-      background-color: #4a5568;
-      /* gray-700 */
+    button {
+      background: #4CAF50;
       color: white;
-      padding: 5px 10px;
-      margin: 5px;
       border: none;
-      border-radius: 3px;
+      padding: 8px 16px;
+      margin: 5px;
+      border-radius: 4px;
       cursor: pointer;
-      transition: background-color 0.2s;
     }
-
-    #ui-container button:hover {
-      background-color: #2d3748;
-      /* gray-800 */
+    button:hover {
+      background: #45a049;
     }
-
-    #loading-indicator {
-      /* Basic loading */
-      position: absolute;
+    #loading {
+      position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       color: white;
-      font-size: 1.5em;
-      font-family: sans-serif;
+      font-size: 24px;
+      font-family: Arial, sans-serif;
     }
   </style>
 </head>
 
 <body>
-  <div id="loading-indicator">Loading Physics...</div>
-  <div id="ui-container" style="display: none;"> <!-- Hide until ready -->
-    <h2 class="text-lg font-bold mb-2">Æther Weaver Controls</h2>
-    <p>Click + Drag: Weave String</p>
-    <p>Click: Conjure Nebula Core</p>
-    <p>Click + Drag Object: Grab & Throw</p>
-    <button id="pulse-btn">Emit Gravitational Pulse</button>
-    <button id="clear-btn">Clear Scene</button>
-    <!-- Add more controls (e.g., sliders) if desired -->
+  <div id="loading">Loading...</div>
+  <div id="ui" style="display: none;">
+    <h3>Controls</h3>
+    <button id="addSphere">Add Sphere</button>
+    <button id="addCube">Add Cube</button>
+    <button id="clear">Clear All</button>
+    <p>Click + Drag to move objects</p>
+    <p>Mouse wheel to zoom</p>
+    <p>Right click + drag to rotate</p>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <!-- Option 1: Rapier -->
-  <script type="module" src="script.js"></script>
-  <!-- Option 2: Ammo (Needs Ammo.js build, often loaded async) -->
-  <!-- <script src="path/to/ammo.wasm.js"></script> -->
-  <!-- <script src="main_ammo.js"></script> -->
+  <!-- Import maps polyfill for browsers that don't support it -->
+  <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-  <!-- Note: Choose ONE physics engine and its corresponding main JS file -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://threejs.org/build/three.module.js",
+      "three/addons/": "https://threejs.org/examples/jsm/",
+      "@dimforge/rapier3d-compat": "https://cdn.skypack.dev/@dimforge/rapier3d-compat"
+    }
+  }
+  </script>
+  
+  <!-- Main application -->
+  <script type="module" src="script.js"></script>
 </body>
 
 </html>
