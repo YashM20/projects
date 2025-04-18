@@ -1,4 +1,5 @@
 # Creative Technology Portfolio
+[![Visits Badge](https://badges.pufler.dev/visits/YashM20/projects)](https://github.com/YashM20/projects)
 
 A collection of interactive projects by Yash M.
 
@@ -95,23 +96,6 @@ To modify the portfolio:
 1. Edit the HTML and CSS in `index.html` 
 2. For Tailwind CSS, refer to the [Tailwind CSS documentation](https://tailwindcss.com/docs)
 
-    <!-- Visitor Counter -->
-
- <a href='http://www.freevisitorcounters.com'>
- 
- on Freevisitorcounters.com
- 
- </a> 
- 
- <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=70a85b603ddbbfde1f0f711b387c52c80974be53'>
-
-
- </script>
-
-<script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/1328946/t/0">
-
-  
-</script>
 
 ## License
 
