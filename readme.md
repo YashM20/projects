@@ -11,6 +11,7 @@ A collection of interactive projects by Yash M.
 | PixelArt | Digital Art | [View Live](https://yashm20.github.io/projects/pixelart/index.html) |
 | Dynamic-Data-Sculpture | Data Art | [View Live](https://yashm20.github.io/projects/dynamic-data-sculpture/index.html) |
 | NeuralNet_Symphony | AI & Audio | [View Live](https://yashm20.github.io/projects/NeuralNet_Symphony/index.html) |
+| Isometric_Patterns | Generative Art | [View Live](https://yashm20.github.io/projects/isometric_patterns/index.html) |
 | 3D_Ecosystem_Simulation | 3D Simulation | [View Live](https://yashm20.github.io/projects/3D_Ecosystem_Simulation/index.html) |
 | Fractal_Explorer | Fractals | [View Live](https://yashm20.github.io/projects/Fractal_Explorer/index.html) |
 | Audio-Driven-Particles | Audio Visualization | [View Live](https://yashm20.github.io/projects/Audio-Driven-Particles/index.html) |
@@ -39,6 +40,13 @@ A visual representation of complex datasets transformed into responsive, sculptu
 An experimental project using neural networks to generate and visualize musical compositions with evolving patterns and textures.
 
 **Technologies:** TensorFlow.js, Web Audio API, Canvas
+
+### Isometric_Patterns
+**[View Live](https://yashm20.github.io/projects/isometric_patterns/index.html)**
+
+An interactive pattern generator that creates customizable isometric designs with dynamic color variations and 3D effects. Users can adjust tile size, spacing, colors, and rotation to create unique geometric compositions.
+
+**Technologies:** Fabric.js, JavaScript, Tailwind CSS
 
 ### 3D_Ecosystem_Simulation
 **[View Live](https://yashm20.github.io/projects/3D_Ecosystem_Simulation/index.html)**
