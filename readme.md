@@ -1,5 +1,4 @@
 # Creative Technology Portfolio
-[![Visits Badge](https://badges.pufler.dev/visits/YashM20/projects)](https://github.com/YashM20/projects)
 
 A collection of interactive projects by Yash M.
 
