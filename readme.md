@@ -12,6 +12,7 @@ A collection of interactive projects by Yash M.
 | Dynamic-Data-Sculpture | Data Art | [View Live](https://yashm20.github.io/projects/dynamic-data-sculpture/index.html) | [View Source](./dynamic-data-sculpture/index.html) |
 | NeuralNet_Symphony | AI & Audio | [View Live](https://yashm20.github.io/projects/NeuralNet_Symphony/index.html) | [View Source](./NeuralNet_Symphony/index.html) |
 | Isometric_Patterns | Generative Art | [View Live](https://yashm20.github.io/projects/isometric_patterns/index.html) | [View Source](./isometric_patterns/index.html) |
+| 3D_Model_Viewer | 3D Interactive | [View Live](https://yashm20.github.io/projects/3d_model_viewer/index.html) | [View Source](./3d_model_viewer/index.html) |
 | 3D_Ecosystem_Simulation | 3D Simulation | [View Live](https://yashm20.github.io/projects/3D_Ecosystem_Simulation/index.html) | [View Source](./3D_Ecosystem_Simulation/index.html) |
 | Fractal_Explorer | Fractals | [View Live](https://yashm20.github.io/projects/Fractal_Explorer/index.html) | [View Source](./Fractal_Explorer/index.html) |
 | Audio-Driven-Particles | Audio Visualization | [View Live](https://yashm20.github.io/projects/Audio-Driven-Particles/index.html) | [View Source](./Audio-Driven-Particles/index.html) |
@@ -47,6 +48,13 @@ An experimental project using neural networks to generate and visualize musical 
 An interactive pattern generator that creates customizable isometric designs with dynamic color variations and 3D effects. Users can adjust tile size, spacing, colors, and rotation to create unique geometric compositions.
 
 **Technologies:** Fabric.js, JavaScript, Tailwind CSS
+
+### 3D_Model_Viewer
+**[View Live](https://yashm20.github.io/projects/3d_model_viewer/index.html)**
+
+A 3D interactive model viewer that allows users to explore and interact with 3D models in a web environment.
+
+**Technologies:** Three.js, JavaScript, WebGL
 
 ### 3D_Ecosystem_Simulation
 **[View Live](https://yashm20.github.io/projects/3D_Ecosystem_Simulation/index.html)**

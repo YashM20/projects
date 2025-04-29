@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model Viewer & Navigator (.glb, .obj)</title> <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Styles remain largely the same as the previous version */
+        body { font-family: 'Inter', sans-serif; margin: 0; overflow: hidden; background-color: #1a1a1a; color: #e0e0e0; }
+        #container { width: 100vw; height: 100vh; position: relative; }
+        #canvas { display: block; width: 100%; height: 100%; }
+        #controls { position: absolute; top: 1rem; left: 1rem; background-color: rgba(0, 0, 0, 0.7); padding: 1rem; border-radius: 0.5rem; z-index: 10; max-width: 350px; }
+        #controls label, #controls input, #controls button { display: block; margin-bottom: 0.75rem; width: 100%; }
+        #controls label { font-weight: 600; margin-bottom: 0.25rem; font-size: 0.9rem; }
+        #controls input[type="file"] { background-color: #4a4a4a; border: 1px solid #666; padding: 0.5rem; border-radius: 0.25rem; cursor: pointer; font-size: 0.85rem; }
+        #controls input[type="file"]::file-selector-button { background-color: #0ea5e9; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 0.25rem; cursor: pointer; margin-right: 0.5rem; font-size: 0.85rem; }
+        #load-button { background-color: #16a34a; color: white; padding: 0.6rem 1rem; border: none; border-radius: 0.375rem; cursor: pointer; font-weight: 500; transition: background-color 0.2s ease; }
+        #load-button:hover { background-color: #15803d; }
+        #load-button:disabled { background-color: #6b7280; cursor: not-allowed; }
+        #instructions { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.8); color: white; padding: 1.5rem; border-radius: 0.5rem; text-align: center; z-index: 20; font-size: 1.1rem; display: none; cursor: pointer; white-space: pre; }
+        #loading-indicator { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 1.5rem; z-index: 30; display: none; background-color: rgba(0, 0, 0, 0.7); padding: 1rem 1.5rem; border-radius: 0.5rem; }
+        body.pointer-locked #instructions { display: none; }
+        #crosshair { position: absolute; top: 50%; left: 50%; width: 10px; height: 10px; border: 1px solid white; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; display: none; z-index: 25; }
+        body.pointer-locked #crosshair { display: block; }
+        .file-input-label { font-size: 0.8rem; color: #a0a0a0; margin-top: -0.5rem; margin-bottom: 0.75rem; }
+        .important-note { /* Style for the texture/blend note */
+             font-size: 0.8rem;
+             color: #facc15; /* yellow-400 */
+             background-color: rgba(250, 204, 21, 0.1); /* Light yellow background */
+             padding: 0.5rem;
+             border-radius: 0.25rem;
+             border: 1px solid rgba(250, 204, 21, 0.3);
+             margin-top: 0.5rem;
+             line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="controls">
+            <label for="model-upload" class="text-lg font-semibold mb-2">Load 3D Model</label>
+
+            <label for="model-upload">Select Model File (.glb or .obj)</label>
+            <input type="file" id="model-upload" accept=".glb,.obj">
+            <p class="file-input-label">Choose the main geometry file.</p>
+
+            <label for="mtl-upload">Select Material File (.mtl) (Optional, for .obj)</label>
+            <input type="file" id="mtl-upload" accept=".mtl">
+             <p class="file-input-label">Needed for OBJ materials/colors.</p>
+
+            <button id="load-button">Load Model</button>
+
+            <div class="important-note">
+                <strong>Important Notes:</strong><br>
+                - <strong>.blend files are not supported.</strong> Please export from Blender to .glb (recommended) or .obj format first.<br>
+                - Textures (.png, .jpg) for .obj models may not load from local files due to browser security. Use .glb or host files online for textures to work reliably.
+            </div>
+        </div>
+        <div id="loading-indicator">Loading...</div>
+        <div id="instructions">
+            Click to start exploring
+            WASD: Move Horizontally
+            SPACE: Move Up
+            SHIFT: Move Down
+            Mouse: Look Around
+        </div>
+        <div id="crosshair"></div>
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+        import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+        import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+
+        // --- Core Scene Setup (variables remain the same) ---
+        let scene, camera, renderer, controls;
+        let clock = new THREE.Clock();
+        let moveForward = false, moveBackward = false, moveLeft = false, moveRight = false, moveUp = false, moveDown = false;
+        const velocity = new THREE.Vector3();
+        const direction = new THREE.Vector3();
+        let loadedObject = null;
+
+        // --- DOM Element References (remain the same) ---
+        const container = document.getElementById('container');
+        const canvas = document.getElementById('canvas');
+        const modelInput = document.getElementById('model-upload');
+        const mtlInput = document.getElementById('mtl-upload');
+        const loadButton = document.getElementById('load-button');
+        const instructions = document.getElementById('instructions');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const crosshair = document.getElementById('crosshair');
+
+        // --- Initialization Function (remains the same) ---
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x333333);
+            scene.fog = new THREE.Fog(0x333333, 10, 50);
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 1.6, 5);
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            directionalLight.position.set(5, 10, 7.5);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 1024;
+            directionalLight.shadow.mapSize.height = 1024;
+            directionalLight.shadow.camera.near = 0.5;
+            directionalLight.shadow.camera.far = 50;
+            directionalLight.shadow.camera.left = -20;
+            directionalLight.shadow.camera.right = 20;
+            directionalLight.shadow.camera.top = 20;
+            directionalLight.shadow.camera.bottom = -20;
+            scene.add(directionalLight);
+            const groundGeometry = new THREE.PlaneGeometry(100, 100);
+            const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x808080, side: THREE.DoubleSide });
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            scene.add(ground);
+            controls = new PointerLockControls(camera, document.body);
+            scene.add(controls.getObject());
+            instructions.addEventListener('click', () => controls.lock());
+            controls.addEventListener('lock', () => {
+                instructions.style.display = 'none';
+                document.body.classList.add('pointer-locked');
+            });
+            controls.addEventListener('unlock', () => {
+                if (loadedObject) { instructions.style.display = 'block'; }
+                document.body.classList.remove('pointer-locked');
+            });
+            document.addEventListener('keydown', onKeyDown);
+            document.addEventListener('keyup', onKeyUp);
+            loadButton.addEventListener('click', handleLoadRequest);
+            loadButton.disabled = true;
+            modelInput.addEventListener('change', () => {
+                 // Reset file input if invalid type is selected (e.g., .blend)
+                 const modelFile = modelInput.files ? modelInput.files[0] : null;
+                 if (modelFile && modelFile.name.toLowerCase().endsWith('.blend')) {
+                     alert(".blend files are not supported.\nPlease export your model to .glb or .obj format from Blender.");
+                     modelInput.value = ''; // Clear the input
+                     loadButton.disabled = true;
+                 } else {
+                    loadButton.disabled = !modelInput.files || modelInput.files.length === 0;
+                 }
+            });
+            window.addEventListener('resize', onWindowResize);
+            animate();
+        }
+
+        // --- Key Handlers (remain the same) ---
+        function onKeyDown(event) {
+            switch (event.code) {
+                case 'ArrowUp': case 'KeyW': moveForward = true; break;
+                case 'ArrowLeft': case 'KeyA': moveLeft = true; break;
+                case 'ArrowDown': case 'KeyS': moveBackward = true; break;
+                case 'ArrowRight': case 'KeyD': moveRight = true; break;
+                case 'Space': moveUp = true; break;
+                case 'ShiftLeft': moveDown = true; break;
+            }
+        }
+        function onKeyUp(event) {
+            switch (event.code) {
+                case 'ArrowUp': case 'KeyW': moveForward = false; break;
+                case 'ArrowLeft': case 'KeyA': moveLeft = false; break;
+                case 'ArrowDown': case 'KeyS': moveBackward = false; break;
+                case 'ArrowRight': case 'KeyD': moveRight = false; break;
+                case 'Space': moveUp = false; break;
+                case 'ShiftLeft': moveDown = false; break;
+            }
+        }
+
+        // --- File Handling and Loading (UPDATED handleLoadRequest) ---
+        function handleLoadRequest() {
+            const modelFile = modelInput.files ? modelInput.files[0] : null;
+            const mtlFile = mtlInput.files ? mtlInput.files[0] : null;
+
+            if (!modelFile) {
+                alert('Please select a model file (.glb or .obj).');
+                return;
+            }
+
+            const fileName = modelFile.name.toLowerCase();
+
+            // --- ADDED: Check for .blend files ---
+            if (fileName.endsWith('.blend')) {
+                alert(".blend files are not supported.\nPlease export your model to .glb or .obj format from Blender.");
+                modelInput.value = ''; // Clear the input
+                loadButton.disabled = true;
+                return; // Stop processing
+            }
+            // --- End of .blend check ---
+
+            clearSceneModel();
+            showLoading();
+
+            if (fileName.endsWith('.glb')) {
+                loadGLB(modelFile);
+            } else if (fileName.endsWith('.obj')) {
+                loadOBJ(modelFile, mtlFile);
+            } else {
+                // This case should be less likely now due to the accept attribute and .blend check
+                alert('Unsupported file type. Please select a .glb or .obj file.');
+                hideLoading();
+                modelInput.value = ''; // Clear the input
+                loadButton.disabled = true;
+            }
+        }
+
+        // --- loadGLB, loadOBJ, showLoading, hideLoading, clearSceneModel (remain the same) ---
+        function loadGLB(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => parseGLB(e.target.result);
+            reader.onerror = (e) => { console.error("FileReader error (GLB):", e); alert("Error reading GLB file."); hideLoading(); };
+            reader.readAsArrayBuffer(file);
+         }
+        function loadOBJ(objFile, mtlFile) {
+            const objReader = new FileReader();
+            let objData = null;
+            let mtlData = null;
+            objReader.onload = (e) => {
+                objData = e.target.result;
+                if (mtlFile) {
+                    const mtlReader = new FileReader();
+                    // Set resourcePath for MTLLoader - THIS WON'T WORK FOR LOCAL FILES due to security
+                    // mtlLoader.setResourcePath(/* Needs a base URL or path, not feasible here */);
+                    mtlReader.onload = (e_mtl) => { mtlData = e_mtl.target.result; parseOBJ(objData, mtlData); };
+                    mtlReader.onerror = (e_mtl) => { console.error("FileReader error (MTL):", e_mtl); alert("Error reading MTL file. Loading OBJ without materials."); parseOBJ(objData, null); };
+                    mtlReader.readAsText(mtlFile);
+                } else { parseOBJ(objData, null); }
+            };
+             objReader.onerror = (e) => { console.error("FileReader error (OBJ):", e); alert("Error reading OBJ file."); hideLoading(); };
+            objReader.readAsText(objFile);
+        }
+        function showLoading() { loadingIndicator.style.display = 'flex'; }
+        function hideLoading() { loadingIndicator.style.display = 'none'; }
+        function clearSceneModel() {
+             if (loadedObject) {
+                scene.remove(loadedObject);
+                 loadedObject.traverse(child => {
+                    if (child.isMesh) {
+                        child.geometry.dispose();
+                        if (child.material) {
+                             if (Array.isArray(child.material)) { child.material.forEach(cleanMaterial); }
+                             else { cleanMaterial(child.material); }
+                        }
+                    }
+                });
+                loadedObject = null;
+            }
+        }
+
+        // --- parseGLB, parseOBJ, setupLoadedModel, cleanMaterial (remain the same) ---
+         function parseGLB(data) {
+            const loader = new GLTFLoader();
+            loader.parse(data, '', (gltf) => { console.log("GLB loaded successfully"); loadedObject = gltf.scene; setupLoadedModel(loadedObject); hideLoading(); },
+                         (error) => { console.error('Error parsing GLB:', error); alert('Failed to load/parse GLB model.'); hideLoading(); });
+        }
+        function parseOBJ(objData, mtlData) {
+             const objLoader = new OBJLoader();
+            const mtlLoader = new MTLLoader();
+            let materials = null;
+            if (mtlData) {
+                try {
+                    // Note: Texture paths within mtlData likely won't resolve correctly here
+                    materials = mtlLoader.parse(mtlData, ''); // path argument is crucial but hard to set for local files
+                    materials.preload();
+                    objLoader.setMaterials(materials);
+                    console.log("MTL parsed (textures might not load from local files)");
+                }
+                catch (mtlError) { console.error("Error parsing MTL:", mtlError); alert("Could not parse MTL. Loading with default material."); }
+            } else { console.log("No MTL file, using default materials for OBJ."); }
+            try { const object = objLoader.parse(objData); console.log("OBJ parsed successfully"); loadedObject = object; setupLoadedModel(loadedObject); hideLoading(); }
+            catch (objError) { console.error('Error parsing OBJ:', objError); alert('Failed to parse OBJ model.'); hideLoading(); }
+        }
+        function setupLoadedModel(model) {
+            model.traverse((node) => { if (node.isMesh) { node.castShadow = true; node.receiveShadow = true; } });
+            model.position.set(0, 0, 0);
+            scene.add(model);
+            if (!controls.isLocked) { instructions.style.display = 'block'; }
+        }
+        function cleanMaterial(material) {
+            if (!material) return;
+            material.dispose();
+            for (const key of Object.keys(material)) {
+                const value = material[key];
+                if (value && typeof value === 'object' && 'isTexture' in value) { value.dispose(); }
+            }
+        }
+
+        // --- Window Resize Handler (remains the same) ---
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // --- Animation Loop (remains the same) ---
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+            const speed = 5.0;
+            velocity.x -= velocity.x * 10.0 * delta;
+            velocity.z -= velocity.z * 10.0 * delta;
+            velocity.y -= velocity.y * 10.0 * delta;
+            if (controls.isLocked) {
+                direction.z = Number(moveForward) - Number(moveBackward);
+                direction.x = Number(moveRight) - Number(moveLeft);
+                direction.y = Number(moveUp) - Number(moveDown);
+                direction.normalize();
+                if (moveForward || moveBackward) velocity.z -= direction.z * speed * delta * 10;
+                if (moveLeft || moveRight) velocity.x -= direction.x * speed * delta * 10;
+                if (moveUp || moveDown) velocity.y += direction.y * speed * delta * 10;
+                controls.moveRight(-velocity.x * delta);
+                controls.moveForward(-velocity.z * delta);
+                controls.getObject().position.y += velocity.y * delta;
+            }
+            renderer.render(scene, camera);
+        }
+
+        // --- Initialization ---
+        init();
+
+    </script>
+</body>
+</html>
